@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tocoin — Visualize sua Moeda</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --gold: #C9A84C;
+      --gold-light: #E8C87A;
+      --gold-dark: #8B6914;
+      --bg: #0A0906;
+      --bg-2: #12100C;
+      --bg-3: #1C1912;
+      --border: rgba(201, 168, 76, 0.15);
+      --border-strong: rgba(201, 168, 76, 0.35);
+      --text: #F0E8D6;
+      --text-muted: #8A7D65;
+      --text-faint: #4A4235;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Background texture */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(ellipse at 20% 50%, rgba(201, 168, 76, 0.04) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(201, 168, 76, 0.03) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header */
+    header {
+      padding: 48px 0 40px;
+      text-align: center;
+    }
+
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 32px;
+    }
+
+    .coin-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 1px solid var(--border-strong);
+      background: var(--bg-3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      position: relative;
+    }
+
+    .coin-icon::before {
+      content: '';
+      position: absolute;
+      inset: 4px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+    }
+
+    .coin-icon svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 36px;
+      font-weight: 500;
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    h1 span {
+      color: var(--gold);
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    /* Steps indicator */
+    .steps {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin: 32px 0;
+    }
+
+    .step-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--text-faint);
+      transition: all 0.3s;
+    }
+
+    .step-dot.active {
+      background: var(--gold);
+      width: 24px;
+      border-radius: 3px;
+    }
+
+    .step-dot.done {
+      background: var(--gold-dark);
+    }
+
+    /* Card */
+    .card {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 24px;
+      display: none;
+      animation: fadeUp 0.4s ease;
+    }
+
+    .card.active {
+      display: block;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card-label {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 500;
+      margin-bottom: 24px;
+      color: var(--text);
+    }
+
+    /* Form elements */
+    .field {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      letter-spacing: 0.05em;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+      appearance: none;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: var(--text-faint);
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--border-strong);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+      line-height: 1.6;
+    }
+
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238A7D65' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 36px;
+      cursor: pointer;
+    }
+
+    select option {
+      background: #1C1912;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* Button */
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--gold);
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      color: #0A0906;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 8px;
+      letter-spacing: 0.02em;
+    }
+
+    .btn:hover {
+      background: var(--gold-light);
+    }
+
+    .btn:active {
+      transform: scale(0.99);
+    }
+
+    .btn:disabled {
+      background: var(--text-faint);
+      cursor: not-allowed;
+      color: var(--bg);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border-strong);
+      color: var(--text-muted);
+      margin-top: 12px;
+    }
+
+    .btn-outline:hover {
+      background: var(--bg-3);
+      color: var(--text);
+    }
+
+    /* Tags */
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .tag {
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 13px;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--bg-3);
+    }
+
+    .tag:hover {
+      border-color: var(--border-strong);
+      color: var(--text);
+    }
+
+    .tag.selected {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: rgba(201, 168, 76, 0.08);
+    }
+
+    /* Status */
+    .status {
+      text-align: center;
+      padding: 16px;
+      font-size: 13px;
+      color: var(--text-muted);
+      display: none;
+    }
+
+    .status.active {
+      display: block;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--border-strong);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .error-msg {
+      background: rgba(180, 50, 50, 0.1);
+      border: 1px solid rgba(180, 50, 50, 0.3);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 13px;
+      color: #E07070;
+      margin-top: 12px;
+      display: none;
+    }
+
+    /* Result */
+    .result-img {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      display: block;
+      margin-bottom: 20px;
+    }
+
+    .result-meta {
+      font-size: 12px;
+      color: var(--text-faint);
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 24px 0;
+    }
+
+    .cta-box {
+      text-align: center;
+    }
+
+    .cta-box p {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+
+    .btn-whatsapp {
+      background: #25D366;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-weight: 500;
+    }
+
+    .btn-whatsapp:hover {
+      background: #20BD5A;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 40px 0;
+      font-size: 12px;
+      color: var(--text-faint);
+    }
+
+    .upload-area {
+      border: 1px dashed var(--border-strong);
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--bg-3);
+      position: relative;
+    }
+
+    .upload-area:hover {
+      border-color: var(--gold);
+    }
+
+    .upload-area input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .upload-area p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .upload-area small {
+      font-size: 11px;
+      color: var(--text-faint);
+    }
+
+    .upload-preview {
+      width: 100%;
+      max-height: 160px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-top: 10px;
+      display: none;
+    }
+
+    .or-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 16px 0;
+      font-size: 12px;
+      color: var(--text-faint);
+    }
+
+    .or-divider::before,
+    .or-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <header>
+      <div class="logo">Tocoin Moedas & Medalhas</div>
+      <div class="coin-icon">
+        <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="14" cy="14" r="12" stroke="#C9A84C" stroke-width="1" />
+          <circle cx="14" cy="14" r="8" stroke="#C9A84C" stroke-width="0.5" stroke-dasharray="2 2" />
+          <path d="M14 8v8M10 12h8" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+      </div>
+      <h1>Visualize sua <span>moeda</span> antes de pedir</h1>
+      <p class="subtitle">Use inteligência artificial para ver como ficará sua challenge coin ou brevê personalizado.
+      </p>
+    </header>
+
+    <div class="steps">
+      <div class="step-dot active" id="dot-1"></div>
+      <div class="step-dot" id="dot-2"></div>
+      <div class="step-dot" id="dot-3"></div>
+    </div>
+
+    <!-- STEP 1: Cadastro -->
+    <div class="card active" id="step-1">
+      <div class="card-label">Passo 1 de 3</div>
+      <div class="card-title">Seus dados para receber o orçamento</div>
+
+      <div class="field">
+        <label>Nome completo</label>
+        <input type="text" id="nome" placeholder="Seu nome" autocomplete="name">
+      </div>
+      <div class="field">
+        <label>WhatsApp</label>
+        <input type="tel" id="telefone" placeholder="(00) 00000-0000" autocomplete="tel">
+      </div>
+      <div class="field">
+        <label>E-mail</label>
+        <input type="email" id="email" placeholder="seu@email.com" autocomplete="email">
+      </div>
+
+      <div class="error-msg" id="error-1"></div>
+      <button class="btn" onclick="irStep2()">Continuar →</button>
+    </div>
+
+    <!-- STEP 2: Configuração -->
+    <div class="card" id="step-2">
+      <div class="card-label">Passo 2 de 3</div>
+      <div class="card-title">Configure sua peça</div>
+
+      <div class="field">
+        <label>Tipo de peça</label>
+        <div class="tags" id="tipo-tags">
+          <div class="tag selected" onclick="selectTag(this,'tipo')">Challenge Coin</div>
+          <div class="tag" onclick="selectTag(this,'tipo')">Brevê Militar</div>
+          <div class="tag" onclick="selectTag(this,'tipo')">Medalha</div>
+          <div class="tag" onclick="selectTag(this,'tipo')">Moeda Comemorativa</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Acabamento</label>
+        <div class="tags" id="material-tags">
+          <div class="tag selected" onclick="selectTag(this,'material')">Dourado</div>
+          <div class="tag" onclick="selectTag(this,'material')">Prateado</div>
+          <div class="tag" onclick="selectTag(this,'material')">Bronze Envelhecido</div>
+          <div class="tag" onclick="selectTag(this,'material')">Níquel Preto</div>
+          <div class="tag" onclick="selectTag(this,'material')">Dourado com Esmalte</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Descreva sua peça</label>
+        <textarea id="descricao"
+          placeholder="Ex: Moeda do Exército Brasileiro com águia em relevo, escudo no centro, texto BRASIL ao redor, fundo azul royal..."></textarea>
+      </div>
+
+      <div class="or-divider">ou envie uma imagem de referência</div>
+
+      <div class="upload-area" id="upload-area">
+        <input type="file" id="file-input" accept="image/*" onchange="handleUpload(this)">
+        <p>Clique para enviar uma imagem de referência</p>
+        <small>PNG, JPG — opcional</small>
+        <img class="upload-preview" id="upload-preview">
+      </div>
+
+      <div class="error-msg" id="error-2"></div>
+      <button class="btn" onclick="irStep3()">Gerar imagem →</button>
+      <button class="btn btn-outline" onclick="voltarStep1()">← Voltar</button>
+    </div>
+
+    <!-- STEP 3: Resultado -->
+    <div class="card" id="step-3">
+      <div class="card-label">Passo 3 de 3</div>
+      <div class="card-title">Sua peça gerada por IA</div>
+
+      <div class="status active" id="status-gerando">
+        <span class="spinner"></span>
+        <span id="status-text">Gerando sua peça... aguarde</span>
+      </div>
+
+      <div id="result-content" style="display:none;">
+        <img class="result-img" id="result-img">
+        <p class="result-meta">Imagem gerada por IA — resultado ilustrativo. A peça real pode ter pequenas variações.
+        </p>
+
+        <div class="divider"></div>
+
+        <div class="cta-box">
+          <p>Gostou do resultado? Fale com nossa equipe e receba um orçamento personalizado.</p>
+          <button class="btn btn-whatsapp" onclick="abrirWhatsApp()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+            </svg>
+            Quero meu orçamento
+          </button>
+          <button class="btn btn-outline" onclick="gerarNovamente()">Gerar novamente</button>
+          <button class="btn btn-outline" onclick="voltarStep2()" style="margin-top:8px;">← Alterar
+            configuração</button>
+        </div>
+      </div>
+
+      <div class="error-msg" id="error-3"></div>
+    </div>
+
+    <footer>
+      © 2026 Tocoin Moedas e Medalhas · Brasil
+    </footer>
+  </div>
+
+  <script>
+    const GEMINI_KEY = 'AIzaSyCfE4V74MbiNCEmLtxzeettul0v9RxM5y4';
+    const SUPABASE_URL = 'https://pvzrlcjkdwueouxtaemg.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2enJsY2prZHd1ZW91eHRhZW1nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2MTEzNDYsImV4cCI6MjA5MzE4NzM0Nn0.3xXiaBPQLx8BkmRwEdoD87OqRqW_i6CftfdURfVFS40';
+    const WHATSAPP = '554891113924'; // Substituir pelo número real da Tocoin
+
+    let tipoSelecionado = 'Challenge Coin';
+    let materialSelecionado = 'Dourado';
+    let uploadBase64 = null;
+    let timerInterval = null;
+
+    const materialMap = {
+      'Dourado': 'polished gold',
+      'Prateado': 'polished silver',
+      'Bronze Envelhecido': 'antique bronze',
+      'Níquel Preto': 'black nickel',
+      'Dourado com Esmalte': 'gold with colored enamel'
+    };
+
+    const tipoMap = {
+      'Challenge Coin': 'challenge coin',
+      'Brevê Militar': 'military brevet pin',
+      'Medalha': 'medal',
+      'Moeda Comemorativa': 'commemorative coin'
+    };
+
+    function selectTag(el, group) {
+      const container = document.getElementById(group + '-tags');
+      container.querySelectorAll('.tag').forEach(t => t.classList.remove('selected'));
+      el.classList.add('selected');
+      if (group === 'tipo') tipoSelecionado = el.textContent;
+      if (group === 'material') materialSelecionado = el.textContent;
+    }
+
+    function handleUpload(input) {
+      const file = input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        uploadBase64 = e.target.result.split(',')[1];
+        const preview = document.getElementById('upload-preview');
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+        document.querySelector('#upload-area p').textContent = file.name;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function setStep(n) {
+      [1, 2, 3].forEach(i => {
+        document.getElementById('step-' + i).classList.toggle('active', i === n);
+        const dot = document.getElementById('dot-' + i);
+        dot.classList.remove('active', 'done');
+        if (i === n) dot.classList.add('active');
+        else if (i < n) dot.classList.add('done');
+      });
+    }
+
+    function showError(id, msg) {
+      const el = document.getElementById(id);
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+
+    function hideError(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    function irStep2() {
+      hideError('error-1');
+      const nome = document.getElementById('nome').value.trim();
+      const telefone = document.getElementById('telefone').value.trim();
+      const email = document.getElementById('email').value.trim();
+      if (!nome) return showError('error-1', 'Por favor, informe seu nome.');
+      if (!telefone) return showError('error-1', 'Por favor, informe seu WhatsApp.');
+      if (!email || !email.includes('@')) return showError('error-1', 'Por favor, informe um e-mail válido.');
+      setStep(2);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function voltarStep1() { setStep(1); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    function voltarStep2() {
+      document.getElementById('result-content').style.display = 'none';
+      document.getElementById('status-gerando').classList.add('active');
+      hideError('error-3');
+      setStep(2);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    async function salvarLead() {
+      try {
+        await fetch(`${SUPABASE_URL}/rest/v1/leads`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify({
+            nome: document.getElementById('nome').value.trim(),
+            telefone: document.getElementById('telefone').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            tipo: tipoSelecionado,
+            material: materialSelecionado,
+            descricao: document.getElementById('descricao').value.trim(),
+            criado_em: new Date().toISOString()
+          })
+        });
+      } catch (e) {
+        console.warn('Supabase save failed:', e);
+      }
+    }
+
+    async function irStep3() {
+      hideError('error-2');
+      const descricao = document.getElementById('descricao').value.trim();
+      if (!descricao && !uploadBase64) {
+        return showError('error-2', 'Por favor, descreva sua peça ou envie uma imagem de referência.');
+      }
+      setStep(3);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.getElementById('result-content').style.display = 'none';
+      document.getElementById('status-gerando').classList.add('active');
+      hideError('error-3');
+
+      salvarLead();
+      await gerarImagem();
+    }
+
+    async function gerarImagem() {
+      const descricao = document.getElementById('descricao').value.trim();
+      const tipo = tipoMap[tipoSelecionado] || 'challenge coin';
+      const material = materialMap[materialSelecionado] || 'polished gold';
+
+      const prompt = `A highly detailed photorealistic macro photograph of a ${tipo} made of ${material}. ${descricao}. High relief 3D sculpting, intricate fine details, dark velvet background, dramatic cinematic lighting, metallic reflections and depth, professional product photography, 8k resolution.`;
+
+      let elapsed = 0;
+      timerInterval = setInterval(() => {
+        elapsed++;
+        document.getElementById('status-text').textContent = `Gerando sua peça... ${elapsed}s`;
+      }, 1000);
+
+      try {
+        const parts = [];
+
+        if (uploadBase64) {
+          parts.push({ inlineData: { mimeType: 'image/jpeg', data: uploadBase64 } });
+          parts.push({ text: `Use this image as style reference. Generate a ${tipo} inspired by it. ${prompt}` });
+        } else {
+          parts.push({ text: prompt });
+        }
+
+        const res = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:generateContent?key=${GEMINI_KEY}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts }],
+              generationConfig: { responseModalities: ['IMAGE', 'TEXT'] }
+            })
+          }
+        );
+
+        clearInterval(timerInterval);
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.error?.message || 'Erro na API');
+
+        const imgPart = data.candidates?.[0]?.content?.parts?.find(p => p.inlineData);
+        if (!imgPart) throw new Error('Nenhuma imagem retornada pelo Gemini.');
+
+        const src = `data:${imgPart.inlineData.mimeType};base64,${imgPart.inlineData.data}`;
+        document.getElementById('result-img').src = src;
+        document.getElementById('status-gerando').classList.remove('active');
+        document.getElementById('result-content').style.display = 'block';
+
+      } catch (e) {
+        clearInterval(timerInterval);
+        document.getElementById('status-gerando').classList.remove('active');
+        showError('error-3', 'Erro ao gerar imagem: ' + e.message);
+      }
+    }
+
+    function gerarNovamente() {
+      document.getElementById('result-content').style.display = 'none';
+      document.getElementById('status-gerando').classList.add('active');
+      hideError('error-3');
+      gerarImagem();
+    }
+
+    function abrirWhatsApp() {
+      const nome = document.getElementById('nome').value.trim();
+      const tipo = tipoSelecionado;
+      const material = materialSelecionado;
+      const msg = encodeURIComponent(`Olá! Me chamo ${nome} e acabei de visualizar minha ${tipo} (${material}) no site da Tocoin. Gostaria de receber um orçamento!`);
+      window.open(`https://wa.me/${WHATSAPP}?text=${msg}`, '_blank');
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,9 @@
+{
+  "name": "tocoin-leads",
+  "version": "1.0.0",
+  "description": "Tocoin lead generator with AI image generation",
+  "main": "server.js",
+  "dependencies": {
+    "@napi-rs/canvas": "^0.1.44"
+  }
+}

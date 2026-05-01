@@ -36,9 +36,9 @@ const server = http.createServer(async (req, res) => {
 
         // Descobrir modelo disponível — tenta em ordem
         const modelos = [
-          'gemini-2.0-flash-exp-image-generation',
-          'gemini-2.0-flash-preview-image-generation',
-          'gemini-1.5-flash',
+          'gemini-3.1-flash-image-preview',
+          'gemini-3-pro-image-preview',
+          'gemini-2.5-flash-image',
         ];
 
         const parts = [];

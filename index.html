@@ -7,17 +7,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --gold: #C9A84C;
-  --gold-light: #E8C87A;
-  --gold-dark: #8B6914;
-  --bg: #0A0906;
-  --bg-2: #12100C;
-  --bg-3: #1C1912;
-  --border: rgba(201,168,76,0.15);
-  --border-strong: rgba(201,168,76,0.35);
-  --text: #F0E8D6;
-  --text-muted: #8A7D65;
-  --text-faint: #4A4235;
+  --gold: #C9A84C; --gold-light: #E8C87A; --gold-dark: #8B6914;
+  --bg: #0A0906; --bg-2: #12100C; --bg-3: #1C1912;
+  --border: rgba(201,168,76,0.15); --border-strong: rgba(201,168,76,0.35);
+  --text: #F0E8D6; --text-muted: #8A7D65; --text-faint: #4A4235;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 300; min-height: 100vh; overflow-x: hidden; }
@@ -25,7 +18,7 @@ body::before { content: ''; position: fixed; inset: 0; background-image: radial-
 .container { max-width: 600px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
 header { padding: 40px 0 32px; text-align: center; }
 .logo-img { height: 48px; margin-bottom: 24px; opacity: 0.9; }
-h1 { font-family: 'Cormorant Garamond', serif; font-size: 34px; font-weight: 500; line-height: 1.2; color: var(--text); margin-bottom: 10px; }
+h1 { font-family: 'Cormorant Garamond', serif; font-size: 34px; font-weight: 500; line-height: 1.2; margin-bottom: 10px; }
 h1 span { color: var(--gold); }
 .subtitle { font-size: 14px; color: var(--text-muted); line-height: 1.7; max-width: 420px; margin: 0 auto; }
 .steps { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 28px 0; }
@@ -36,14 +29,13 @@ h1 span { color: var(--gold); }
 .card.active { display: block; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 .card-label { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; font-weight: 500; }
-.card-title { font-family: 'Cormorant Garamond', serif; font-size: 21px; font-weight: 500; margin-bottom: 22px; color: var(--text); }
+.card-title { font-family: 'Cormorant Garamond', serif; font-size: 21px; font-weight: 500; margin-bottom: 22px; }
 .field { margin-bottom: 14px; }
 label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px; letter-spacing: 0.05em; }
 input, textarea { width: 100%; background: var(--bg-3); border: 1px solid var(--border); border-radius: 8px; padding: 11px 13px; font-size: 14px; font-family: 'DM Sans', sans-serif; font-weight: 300; color: var(--text); outline: none; transition: border-color 0.2s; }
 input::placeholder, textarea::placeholder { color: var(--text-faint); }
 input:focus, textarea:focus { border-color: var(--border-strong); }
 textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 7px; }
 .tag { padding: 6px 13px; border: 1px solid var(--border); border-radius: 20px; font-size: 12px; color: var(--text-muted); cursor: pointer; transition: all 0.2s; background: var(--bg-3); user-select: none; }
 .tag:hover { border-color: var(--border-strong); color: var(--text); }
@@ -54,9 +46,11 @@ textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
 .btn:hover { background: var(--gold-light); }
 .btn:active { transform: scale(0.99); }
 .btn:disabled { background: var(--text-faint); cursor: not-allowed; color: var(--bg); }
-.btn-outline { background: transparent; border: 1px solid var(--border-strong); color: var(--text-muted); margin-top: 10px; }
+.btn-outline { background: transparent; border: 1px solid var(--border-strong); color: var(--text-muted); }
 .btn-outline:hover { background: var(--bg-3); color: var(--text); }
-.btn-sm { width: auto; padding: 9px 18px; font-size: 13px; }
+.btn-sm { width: auto; padding: 9px 16px; font-size: 13px; }
+.action-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.action-row .btn { margin-top: 0; flex: 1; min-width: 120px; }
 .upload-area { border: 1px dashed var(--border-strong); border-radius: 8px; padding: 18px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--bg-3); position: relative; }
 .upload-area:hover { border-color: var(--gold); }
 .upload-area input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
@@ -65,26 +59,26 @@ textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
 .upload-preview { width: 100%; max-height: 140px; object-fit: cover; border-radius: 6px; margin-top: 8px; display: none; }
 .or-divider { display: flex; align-items: center; gap: 12px; margin: 14px 0; font-size: 12px; color: var(--text-faint); }
 .or-divider::before, .or-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-.status { text-align: center; padding: 16px; font-size: 13px; color: var(--text-muted); display: none; }
+.status { text-align: center; padding: 20px 16px; font-size: 13px; color: var(--text-muted); display: none; }
 .status.active { display: block; }
 .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border-strong); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-right: 8px; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .error-msg { background: rgba(180,50,50,0.1); border: 1px solid rgba(180,50,50,0.3); border-radius: 8px; padding: 11px 13px; font-size: 13px; color: #E07070; margin-top: 10px; display: none; }
-.result-img { width: 100%; border-radius: 12px; border: 1px solid var(--border); display: block; margin-bottom: 16px; }
+.result-img { width: 100%; border-radius: 12px; border: 1px solid var(--border); display: block; margin-bottom: 12px; }
 .result-meta { font-size: 11px; color: var(--text-faint); text-align: center; margin-bottom: 18px; }
-.action-row { display: flex; gap: 10px; margin-bottom: 10px; }
-.action-row .btn { margin-top: 0; }
-.cta-box { text-align: center; margin-top: 4px; }
+.cta-box { text-align: center; }
 .cta-box p { font-size: 14px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.6; }
 .btn-whatsapp { background: #25D366; color: #fff; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 500; }
 .btn-whatsapp:hover { background: #20BD5A; }
 footer { text-align: center; padding: 36px 0; font-size: 12px; color: var(--text-faint); }
+canvas { display: none; }
 </style>
 </head>
 <body>
+<canvas id="watermark-canvas"></canvas>
 <div class="container">
   <header>
-    <img src="/logo-tocoin.png" class="logo-img" alt="Tocoin">
+    <img src="/logo-tocoin.png" class="logo-img" alt="Tocoin" id="logo-header">
     <h1>Visualize sua <span>moeda</span> antes de pedir</h1>
     <p class="subtitle">Use inteligência artificial para ver como ficará sua challenge coin ou brevê personalizado.</p>
   </header>
@@ -139,7 +133,6 @@ footer { text-align: center; padding: 36px 0; font-size: 12px; color: var(--text
       <label>Frente (Lado 1)</label>
       <textarea id="lado1" placeholder="Ex: Águia em alto relevo no centro, texto FORÇA E HONRA ao redor, estrelas na borda..."></textarea>
     </div>
-
     <div class="field">
       <label>Verso (Lado 2)</label>
       <textarea id="lado2" placeholder="Ex: Escudo do Brasil ao centro, texto EXÉRCITO BRASILEIRO na parte inferior, ano 2026..."></textarea>
@@ -155,7 +148,7 @@ footer { text-align: center; padding: 36px 0; font-size: 12px; color: var(--text
 
     <div class="error-msg" id="error-2"></div>
     <button class="btn" onclick="irStep3()">Gerar imagem →</button>
-    <button class="btn btn-outline" onclick="voltarStep1()">← Voltar</button>
+    <button class="btn btn-outline" onclick="voltarStep1()" style="margin-top:10px;">← Voltar</button>
   </div>
 
   <!-- STEP 3 -->
@@ -170,12 +163,12 @@ footer { text-align: center; padding: 36px 0; font-size: 12px; color: var(--text
 
     <div id="result-content" style="display:none;">
       <img class="result-img" id="result-img">
-      <p class="result-meta">Imagem gerada por IA com marca d'água © Tocoin — resultado ilustrativo. A peça real pode ter variações.</p>
+      <p class="result-meta">© Tocoin Moedas e Medalhas — Imagem gerada por IA. Resultado ilustrativo, a peça real pode ter variações.</p>
 
       <div class="action-row">
-        <button class="btn btn-sm" onclick="downloadImagem()">⬇ Baixar imagem</button>
+        <button class="btn btn-sm" onclick="downloadImagem()">⬇ Baixar</button>
         <button class="btn btn-outline btn-sm" onclick="limparGerar()">↺ Gerar novamente</button>
-        <button class="btn btn-outline btn-sm" onclick="limparCampos()">✕ Limpar tudo</button>
+        <button class="btn btn-outline btn-sm" onclick="limparCampos()">✕ Limpar</button>
       </div>
 
       <div class="section-divider"></div>
@@ -201,6 +194,14 @@ footer { text-align: center; padding: 36px 0; font-size: 12px; color: var(--text
   let uploadBase64 = null;
   let timerInterval = null;
   let resultImageSrc = null;
+  let logoImg = null;
+
+  // Pre-load logo for watermark
+  window.addEventListener('load', () => {
+    logoImg = new Image();
+    logoImg.crossOrigin = 'anonymous';
+    logoImg.src = '/logo-tocoin.png';
+  });
 
   function selectTag(el, group) {
     document.getElementById(group+'-tags').querySelectorAll('.tag').forEach(t => t.classList.remove('selected'));
@@ -268,7 +269,7 @@ footer { text-align: center; padding: 36px 0; font-size: 12px; color: var(--text
           email: document.getElementById('email').value.trim(),
           tipo: tipoSelecionado,
           material: materialSelecionado,
-          descricao: document.getElementById('lado1').value.trim() + ' | ' + document.getElementById('lado2').value.trim(),
+          descricao: (document.getElementById('lado1').value.trim() + ' | ' + document.getElementById('lado2').value.trim()).trim(),
           criado_em: new Date().toISOString()
         })
       });
@@ -295,8 +296,8 @@ footer { text-align: center; padding: 36px 0; font-size: 12px; color: var(--text
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          promptLado1: document.getElementById('lado1').value.trim() || 'Frente da moeda',
-          promptLado2: document.getElementById('lado2').value.trim() || 'Verso da moeda',
+          promptLado1: document.getElementById('lado1').value.trim() || 'front face of the coin',
+          promptLado2: document.getElementById('lado2').value.trim() || 'back face of the coin',
           tipo: tipoSelecionado,
           material: materialSelecionado,
           imageBase64: uploadBase64 || null
@@ -305,8 +306,11 @@ footer { text-align: center; padding: 36px 0; font-size: 12px; color: var(--text
       clearInterval(timerInterval);
       const data = await res.json();
       if (!data.success) throw new Error(data.error || 'Erro desconhecido');
-      resultImageSrc = `data:${data.mimeType};base64,${data.data}`;
-      document.getElementById('result-img').src = resultImageSrc;
+
+      // Apply watermark via canvas
+      const finalSrc = await aplicarMarcaDagua(`data:${data.mimeType};base64,${data.data}`);
+      resultImageSrc = finalSrc;
+      document.getElementById('result-img').src = finalSrc;
       document.getElementById('status-gerando').classList.remove('active');
       document.getElementById('result-content').style.display = 'block';
     } catch(e) {
@@ -314,6 +318,41 @@ footer { text-align: center; padding: 36px 0; font-size: 12px; color: var(--text
       document.getElementById('status-gerando').classList.remove('active');
       showError('error-3','Erro ao gerar imagem: ' + e.message);
     }
+  }
+
+  function aplicarMarcaDagua(src) {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.getElementById('watermark-canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+
+        ctx.drawImage(img, 0, 0);
+
+        // Logo watermark bottom right
+        if (logoImg && logoImg.complete && logoImg.naturalWidth > 0) {
+          const logoW = img.width * 0.16;
+          const logoH = (logoImg.naturalHeight / logoImg.naturalWidth) * logoW;
+          const margin = img.width * 0.02;
+          ctx.globalAlpha = 0.5;
+          ctx.drawImage(logoImg, img.width - logoW - margin, img.height - logoH - margin, logoW, logoH);
+          ctx.globalAlpha = 1;
+        }
+
+        // Copyright text
+        const fontSize = Math.max(12, Math.round(img.width * 0.016));
+        ctx.font = `${fontSize}px Arial, sans-serif`;
+        ctx.fillStyle = 'rgba(255,255,255,0.55)';
+        ctx.textAlign = 'center';
+        ctx.fillText('© Tocoin Moedas e Medalhas — Uso exclusivo para visualização', img.width / 2, img.height - Math.round(fontSize * 0.8));
+
+        resolve(canvas.toDataURL('image/jpeg', 0.92));
+      };
+      img.onerror = () => resolve(src);
+      img.src = src;
+    });
   }
 
   function limparGerar() {
@@ -347,9 +386,7 @@ footer { text-align: center; padding: 36px 0; font-size: 12px; color: var(--text
 
   function abrirWhatsApp() {
     const nome = document.getElementById('nome').value.trim();
-    const tipo = tipoSelecionado;
-    const material = materialSelecionado;
-    const msg = encodeURIComponent(`Olá! Me chamo ${nome} e acabei de visualizar minha ${tipo} (${material}) no site da Tocoin. Gostaria de receber um orçamento!`);
+    const msg = encodeURIComponent(`Olá! Me chamo ${nome} e acabei de visualizar minha ${tipoSelecionado} (${materialSelecionado}) no site da Tocoin. Gostaria de receber um orçamento!`);
     window.open(`https://wa.me/${WHATSAPP}?text=${msg}`, '_blank');
   }
 </script>

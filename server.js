@@ -1,14 +1,11 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-const { createCanvas, loadImage } = require('@napi-rs/canvas');
 
 const PORT = process.env.PORT || 8080;
 const GEMINI_KEY = process.env.GEMINI_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY;
-
-const LOGO_PATH = path.join(__dirname, 'logo-tocoin.png');
 
 const server = http.createServer(async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -25,7 +22,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (req.method === 'GET' && req.url === '/logo-tocoin.png') {
-    const img = fs.readFileSync(LOGO_PATH);
+    const img = fs.readFileSync(path.join(__dirname, 'logo-tocoin.png'));
     res.writeHead(200, { 'Content-Type': 'image/png' });
     res.end(img);
     return;
@@ -55,9 +52,9 @@ const server = http.createServer(async (req, res) => {
         const mat = matMap[material] || 'polished gold';
         const tip = tipoMap[tipo] || 'challenge coin';
 
-        const baseStyle = `Professional product photography of a ${tip}. Material: ${mat}. Background: flat #3d3d3c dark charcoal gradient. Camera angle: perfectly flat frontal view, no tilt. Lighting: dramatic side light from the left highlighting the relief. 3D volume: high relief with medium-depth shadows on engravings. If bronze or antique finish: subtle patina in recesses. Resolution: photorealistic macro, 8k, sharp details, metallic depth.`;
+        const baseStyle = `Material: ${mat}. Background: flat dark charcoal #3d3d3c. Camera: perfectly flat frontal view, no tilt or perspective. Lighting: dramatic side light from left highlighting relief. 3D: high relief with medium-depth shadows on engravings. Photorealistic macro 8k product photography.`;
 
-        const prompt = `Two-sided ${tip} shown side by side on the same image. LEFT SIDE (front face): ${promptLado1}. RIGHT SIDE (back face): ${promptLado2}. Both coins share the same style: ${baseStyle} Show both faces clearly separated in a single horizontal composition, both perfectly centered and aligned.`;
+        const prompt = `Two ${tip}s shown side by side on a single horizontal image. LEFT coin (front face): ${promptLado1 || 'front face of the coin'}. RIGHT coin (back face): ${promptLado2 || 'back face of the coin'}. Both coins: ${baseStyle} Both perfectly aligned, same size, same lighting.`;
 
         const modelos = [
           'gemini-3.1-flash-image-preview',
@@ -101,42 +98,8 @@ const server = http.createServer(async (req, res) => {
           return;
         }
 
-        // Add watermark
-        try {
-          const imgBuffer = Buffer.from(imageData.data, 'base64');
-          const coinImg = await loadImage(imgBuffer);
-          const logoImg = await loadImage(LOGO_PATH);
-
-          const canvas = createCanvas(coinImg.width, coinImg.height);
-          const ctx = canvas.getContext('2d');
-
-          ctx.drawImage(coinImg, 0, 0);
-
-          // Logo watermark bottom right
-          const logoW = coinImg.width * 0.18;
-          const logoH = (logoImg.height / logoImg.width) * logoW;
-          const margin = coinImg.width * 0.02;
-          ctx.globalAlpha = 0.55;
-          ctx.drawImage(logoImg, coinImg.width - logoW - margin, coinImg.height - logoH - margin, logoW, logoH);
-          ctx.globalAlpha = 1;
-
-          // Copyright text
-          const fontSize = Math.round(coinImg.width * 0.018);
-          ctx.font = `${fontSize}px Arial`;
-          ctx.fillStyle = 'rgba(255,255,255,0.6)';
-          ctx.textAlign = 'center';
-          ctx.fillText('© Tocoin Moedas e Medalhas — Imagem gerada por IA. Uso exclusivo para visualização.', coinImg.width / 2, coinImg.height - Math.round(coinImg.height * 0.015));
-
-          const finalBuffer = canvas.toBuffer('image/jpeg', { quality: 0.92 });
-          const finalB64 = finalBuffer.toString('base64');
-
-          res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ success: true, mimeType: 'image/jpeg', data: finalB64, modelo: imageData.modelo }));
-        } catch(e) {
-          console.warn('[WATERMARK] Erro ao adicionar marca d\'água, retornando imagem original:', e.message);
-          res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ success: true, ...imageData }));
-        }
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, ...imageData }));
 
       } catch(e) {
         console.error('[GERAR] Erro:', e.message);

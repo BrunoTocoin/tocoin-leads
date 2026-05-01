@@ -52,9 +52,7 @@ const server = http.createServer(async (req, res) => {
         const mat = matMap[material] || 'polished gold';
         const tip = tipoMap[tipo] || 'challenge coin';
 
-        const baseStyle = `Material: ${mat}. Background: flat dark charcoal #3d3d3c. Camera: perfectly flat frontal view, no tilt or perspective. Lighting: dramatic side light from left highlighting relief. 3D: high relief with medium-depth shadows on engravings. Photorealistic macro 8k product photography.`;
-
-        const prompt = `Two ${tip}s shown side by side on a single horizontal image. LEFT coin (front face): ${promptLado1 || 'front face of the coin'}. RIGHT coin (back face): ${promptLado2 || 'back face of the coin'}. Both coins: ${baseStyle} Both perfectly aligned, same size, same lighting.`;
+        const prompt = `A highly detailed photorealistic macro photograph of two ${tip}s side by side. LEFT coin front face: ${promptLado1 || 'decorative front face'}. RIGHT coin back face: ${promptLado2 || 'decorative back face'}. Both made of ${mat}. Dark charcoal background. Frontal view, dramatic side lighting from left, high relief 3D sculpting, 8k professional product photography.`;
 
         const modelos = [
           'gemini-3.1-flash-image-preview',

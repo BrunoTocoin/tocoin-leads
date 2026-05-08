@@ -15,24 +15,24 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { background: var(--bg); color: var(--text); font-family: 'Montserrat', sans-serif; font-weight: 300; min-height: 100vh; overflow-x: hidden; }
 body::before { content: ''; position: fixed; inset: 0; background-image: radial-gradient(ellipse at 20% 50%, rgba(187,160,90,0.04) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(187,160,90,0.03) 0%, transparent 50%); pointer-events: none; z-index: 0; }
-.container { max-width: 600px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
-header { padding: 40px 0 32px; text-align: center; }
-.logo-img { height: 100px; margin-bottom: 24px; opacity: 0.9; mix-blend-mode: screen; }
-h1 { font-family: 'Montserrat', sans-serif; font-size: 34px; font-weight: 500; line-height: 1.2; margin-bottom: 10px; }
+.container { max-width: 600px; margin: 0 auto; padding: 0 16px; position: relative; z-index: 1; }
+header { padding: 24px 0 20px; text-align: center; }
+.logo-img { height: 120px; margin-bottom: 24px; opacity: 0.9; mix-blend-mode: screen; }
+h1 { font-family: 'Montserrat', sans-serif; font-size: clamp(28px, 8vw, 40px); font-weight: 700; line-height: 1.15; margin-bottom: 10px; }
 h1 span { color: var(--gold); }
-.subtitle { font-size: 14px; color: var(--text-muted); line-height: 1.7; max-width: 420px; margin: 0 auto; }
+.subtitle { font-size: 15px; color: var(--text-muted); line-height: 1.7; max-width: 420px; margin: 0 auto; }
 .steps { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 28px 0; }
 .step-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-faint); transition: all 0.3s; }
 .step-dot.active { background: var(--gold); width: 24px; border-radius: 3px; }
 .step-dot.done { background: var(--gold-dark); }
-.card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 16px; padding: 28px; margin-bottom: 20px; display: none; animation: fadeUp 0.4s ease; }
+.card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 12px; padding: 20px 16px; margin-bottom: 16px; display: none; animation: fadeUp 0.4s ease; }
 .card.active { display: block; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 .card-label { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; font-weight: 500; }
-.card-title { font-family: 'Montserrat', sans-serif; font-size: 21px; font-weight: 500; margin-bottom: 22px; }
+.card-title { font-family: 'Montserrat', sans-serif; font-size: clamp(18px, 5vw, 22px); font-weight: 700; margin-bottom: 18px; }
 .field { margin-bottom: 14px; }
-label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px; letter-spacing: 0.05em; }
-input, textarea { width: 100%; background: var(--bg-3); border: 1px solid var(--border); border-radius: 8px; padding: 11px 13px; font-size: 14px; font-family: 'Montserrat', sans-serif; font-weight: 300; color: var(--text); outline: none; transition: border-color 0.2s; }
+label { display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 6px; letter-spacing: 0.03em; }
+input, textarea { width: 100%; background: var(--bg-3); border: 1px solid var(--border); border-radius: 8px; padding: 13px 14px; font-size: 16px; font-family: 'Montserrat', sans-serif; font-weight: 300; color: var(--text); outline: none; transition: border-color 0.2s; }
 input::placeholder, textarea::placeholder { color: var(--text-faint); }
 input:focus, textarea:focus { border-color: var(--border-strong); }
 textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
@@ -42,7 +42,7 @@ textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
 .tag.selected { border-color: var(--gold); color: var(--gold); background: rgba(187,160,90,0.08); }
 .section-divider { height: 1px; background: var(--border); margin: 20px 0; }
 .section-label { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 14px; }
-.btn { width: 100%; padding: 13px; background: var(--gold); border: none; border-radius: 8px; font-size: 14px; font-family: 'Montserrat', sans-serif; font-weight: 500; color: #2a2a2b; cursor: pointer; transition: all 0.2s; margin-top: 8px; letter-spacing: 0.02em; }
+.btn { width: 100%; padding: 15px; background: var(--gold); border: none; border-radius: 8px; font-size: 16px; font-family: 'Montserrat', sans-serif; font-weight: 600; color: #2a2a2b; cursor: pointer; transition: all 0.2s; margin-top: 10px; letter-spacing: 0.02em; }
 .btn:hover { background: var(--gold-light); }
 .btn:active { transform: scale(0.99); }
 .btn:disabled { background: var(--text-faint); cursor: not-allowed; color: var(--bg); }
@@ -72,6 +72,17 @@ textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
 .btn-whatsapp:hover { background: #20BD5A; }
 footer { text-align: center; padding: 36px 0; font-size: 12px; color: var(--text-faint); }
 canvas { display: none; }
+
+@media (max-width: 480px) {
+  .container { padding: 0 12px; }
+  .card { padding: 18px 14px; border-radius: 10px; }
+  header { padding: 20px 0 16px; }
+  .logo-img { height: 80px; }
+  .steps { margin: 20px 0; }
+  .action-row { flex-direction: column; }
+  .action-row .btn { min-width: unset; }
+}
+
 </style>
 </head>
 <body>

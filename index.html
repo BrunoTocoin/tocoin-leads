@@ -7,7 +7,7 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900&display=swap');
 :root {
-  --font: 'Proxima Nova', 'Montserrat', sans-serif;
+  --font: 'Montserrat', sans-serif;
   --gold: #bba05a;
   --gold-light: #d4b97a;
   --gold-dark: #8a7040;
@@ -21,7 +21,7 @@
   --text-faint: #999896;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: var(--bg); color: var(--text); font-family: 'Proxima Nova', 'Montserrat', sans-serif; font-weight: 300; min-height: 100vh; overflow-x: hidden; }
+body { background: var(--bg); color: var(--text); font-family: var(--font); font-weight: 300; min-height: 100vh; overflow-x: hidden; }
 body::before { content: ''; position: fixed; inset: 0; background-image: radial-gradient(ellipse at 20% 50%, rgba(201,168,76,0.04) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(201,168,76,0.03) 0%, transparent 50%); pointer-events: none; z-index: 0; }
 .container { max-width: 600px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
 header { padding: 40px 0 32px; text-align: center; }

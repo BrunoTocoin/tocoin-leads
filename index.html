@@ -4,20 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tocoin — Visualize sua Moeda</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root {
-  --gold: #C9A84C; --gold-light: #E8C87A; --gold-dark: #8B6914;
-  --bg: #0A0906; --bg-2: #12100C; --bg-3: #1C1912;
-  --border: rgba(201,168,76,0.15); --border-strong: rgba(201,168,76,0.35);
-  --text: #F0E8D6; --text-muted: #8A7D65; --text-faint: #4A4235;
+  --gold: #bba05a; --gold-light: #d4b97a; --gold-dark: #8a7040;
+  --bg: #3d3d3e; --bg-2: #444445; --bg-3: #484849;
+  --border: rgba(187,160,90,0.15); --border-strong: rgba(187,160,90,0.25);
+  --text: #ffffff; --text-muted: #c8c5c0; --text-faint: #999896;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 300; min-height: 100vh; overflow-x: hidden; }
-body::before { content: ''; position: fixed; inset: 0; background-image: radial-gradient(ellipse at 20% 50%, rgba(201,168,76,0.04) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(201,168,76,0.03) 0%, transparent 50%); pointer-events: none; z-index: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'Montserrat', sans-serif; font-weight: 300; min-height: 100vh; overflow-x: hidden; }
+body::before { content: ''; position: fixed; inset: 0; background-image: radial-gradient(ellipse at 20% 50%, rgba(187,160,90,0.04) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(187,160,90,0.03) 0%, transparent 50%); pointer-events: none; z-index: 0; }
 .container { max-width: 600px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
 header { padding: 40px 0 32px; text-align: center; }
-.logo-img { height: 100px; margin-bottom: 24px; opacity: 0.9; }
+.logo-img { height: 100px; margin-bottom: 24px; opacity: 0.9; mix-blend-mode: screen; }
 h1 { font-family: 'Cormorant Garamond', serif; font-size: 34px; font-weight: 500; line-height: 1.2; margin-bottom: 10px; }
 h1 span { color: var(--gold); }
 .subtitle { font-size: 14px; color: var(--text-muted); line-height: 1.7; max-width: 420px; margin: 0 auto; }
@@ -32,17 +32,17 @@ h1 span { color: var(--gold); }
 .card-title { font-family: 'Cormorant Garamond', serif; font-size: 21px; font-weight: 500; margin-bottom: 22px; }
 .field { margin-bottom: 14px; }
 label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px; letter-spacing: 0.05em; }
-input, textarea { width: 100%; background: var(--bg-3); border: 1px solid var(--border); border-radius: 8px; padding: 11px 13px; font-size: 14px; font-family: 'DM Sans', sans-serif; font-weight: 300; color: var(--text); outline: none; transition: border-color 0.2s; }
+input, textarea { width: 100%; background: var(--bg-3); border: 1px solid var(--border); border-radius: 8px; padding: 11px 13px; font-size: 14px; font-family: 'Montserrat', sans-serif; font-weight: 300; color: var(--text); outline: none; transition: border-color 0.2s; }
 input::placeholder, textarea::placeholder { color: var(--text-faint); }
 input:focus, textarea:focus { border-color: var(--border-strong); }
 textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
 .tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 7px; }
 .tag { padding: 6px 13px; border: 1px solid var(--border); border-radius: 20px; font-size: 12px; color: var(--text-muted); cursor: pointer; transition: all 0.2s; background: var(--bg-3); user-select: none; }
 .tag:hover { border-color: var(--border-strong); color: var(--text); }
-.tag.selected { border-color: var(--gold); color: var(--gold); background: rgba(201,168,76,0.08); }
+.tag.selected { border-color: var(--gold); color: var(--gold); background: rgba(187,160,90,0.08); }
 .section-divider { height: 1px; background: var(--border); margin: 20px 0; }
 .section-label { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 14px; }
-.btn { width: 100%; padding: 13px; background: var(--gold); border: none; border-radius: 8px; font-size: 14px; font-family: 'DM Sans', sans-serif; font-weight: 500; color: #0A0906; cursor: pointer; transition: all 0.2s; margin-top: 8px; letter-spacing: 0.02em; }
+.btn { width: 100%; padding: 13px; background: var(--gold); border: none; border-radius: 8px; font-size: 14px; font-family: 'Montserrat', sans-serif; font-weight: 500; color: #2a2a2b; cursor: pointer; transition: all 0.2s; margin-top: 8px; letter-spacing: 0.02em; }
 .btn:hover { background: var(--gold-light); }
 .btn:active { transform: scale(0.99); }
 .btn:disabled { background: var(--text-faint); cursor: not-allowed; color: var(--bg); }

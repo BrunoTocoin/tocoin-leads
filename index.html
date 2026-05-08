@@ -4,16 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tocoin — Visualize sua Moeda</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root {
-  --gold: #C9A84C; --gold-light: #E8C87A; --gold-dark: #8B6914;
-  --bg: #0A0906; --bg-2: #12100C; --bg-3: #1C1912;
-  --border: rgba(201,168,76,0.15); --border-strong: rgba(201,168,76,0.35);
-  --text: #F0E8D6; --text-muted: #8A7D65; --text-faint: #4A4235;
+  --gold: #bba05a;
+  --gold-light: #d4b97a;
+  --gold-dark: #8a7040;
+  --bg: #3d3d3e;
+  --bg-2: #444445;
+  --bg-3: #484849;
+  --border: rgba(187,160,90,0.15);
+  --border-strong: rgba(187,160,90,0.25);
+  --text: #ffffff;
+  --text-muted: #c8c5c0;
+  --text-faint: #999896;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 300; min-height: 100vh; overflow-x: hidden; }
+body { background: var(--bg); color: var(--text); font-family: 'Proxima Nova', 'Montserrat', sans-serif; font-weight: 300; min-height: 100vh; overflow-x: hidden; }
 body::before { content: ''; position: fixed; inset: 0; background-image: radial-gradient(ellipse at 20% 50%, rgba(201,168,76,0.04) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(201,168,76,0.03) 0%, transparent 50%); pointer-events: none; z-index: 0; }
 .container { max-width: 600px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
 header { padding: 40px 0 32px; text-align: center; }

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tocoin — Painel de Leads</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #bba05a; --gold-light: #d4b97a; --gold-line: rgba(187,160,90,0.25);
+  --bg: #2e2e2f; --bg-1: #353536; --bg-2: #3c3c3d; --bg-3: #434344;
+  --ink: #f6f3ec; --ink-muted: #c5bfb2; --ink-faint: #8a857c;
+  --rule: rgba(255,255,255,0.06); --danger: #e07b6a; --success: #4caf7d;
+  --font: 'Montserrat', sans-serif;
+  --radius: 10px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font); font-weight: 300; min-height: 100vh; }
+
+/* LOGIN */
+.login-wrap {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px;
+}
+.login-box {
+  background: var(--bg-2); border: 1px solid var(--rule); border-radius: var(--radius);
+  padding: 40px 32px; width: 100%; max-width: 360px; text-align: center;
+}
+.login-box img { height: 60px; margin-bottom: 24px; mix-blend-mode: screen; }
+.login-box h2 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+.login-box p { font-size: 13px; color: var(--ink-faint); margin-bottom: 24px; }
+.login-box input {
+  width: 100%; background: var(--bg-3); border: 1px solid var(--rule);
+  border-radius: 8px; padding: 12px 14px; font-size: 15px; font-family: var(--font);
+  color: var(--ink); outline: none; text-align: center; letter-spacing: 0.2em; margin-bottom: 12px;
+}
+.login-box input:focus { border-color: var(--gold-line); }
+.btn-login {
+  width: 100%; padding: 13px; background: var(--gold); border: none; border-radius: 8px;
+  font-size: 14px; font-family: var(--font); font-weight: 600; color: #1c1c1d; cursor: pointer;
+}
+.btn-login:hover { background: var(--gold-light); }
+.login-error { font-size: 13px; color: var(--danger); margin-top: 10px; display: none; }
+
+/* ADMIN */
+.admin-wrap { display: none; }
+
+/* Header */
+.admin-header {
+  background: var(--bg-1); border-bottom: 1px solid var(--rule);
+  padding: 16px 32px; display: flex; align-items: center; justify-content: space-between;
+}
+.admin-header img { height: 40px; mix-blend-mode: screen; }
+.admin-header-right { display: flex; align-items: center; gap: 16px; }
+.header-stat { text-align: right; }
+.header-stat .num { font-size: 22px; font-weight: 700; color: var(--gold); }
+.header-stat .lbl { font-size: 11px; color: var(--ink-faint); letter-spacing: 0.1em; text-transform: uppercase; }
+.btn-logout { background: transparent; border: 1px solid var(--rule); border-radius: 6px; padding: 8px 14px; font-size: 12px; font-family: var(--font); color: var(--ink-faint); cursor: pointer; }
+.btn-logout:hover { border-color: var(--gold-line); color: var(--ink); }
+
+/* Filters */
+.filters-bar {
+  background: var(--bg-1); border-bottom: 1px solid var(--rule);
+  padding: 16px 32px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+}
+.filter-group { display: flex; gap: 6px; flex-wrap: wrap; }
+.btn-filter {
+  padding: 7px 14px; border: 1px solid var(--rule); border-radius: 20px;
+  font-size: 12px; font-family: var(--font); font-weight: 400; color: var(--ink-muted);
+  background: var(--bg-2); cursor: pointer; transition: all 0.2s;
+}
+.btn-filter:hover { border-color: var(--gold-line); color: var(--ink); }
+.btn-filter.active { border-color: var(--gold); color: var(--gold); background: rgba(187,160,90,0.08); font-weight: 500; }
+
+.filter-sep { width: 1px; height: 28px; background: var(--rule); margin: 0 4px; }
+
+.date-inputs { display: flex; gap: 8px; align-items: center; }
+.date-inputs input {
+  background: var(--bg-2); border: 1px solid var(--rule); border-radius: 6px;
+  padding: 7px 10px; font-size: 12px; font-family: var(--font); color: var(--ink);
+  outline: none; cursor: pointer;
+}
+.date-inputs input:focus { border-color: var(--gold-line); }
+.date-inputs span { font-size: 12px; color: var(--ink-faint); }
+.btn-apply {
+  padding: 7px 14px; background: var(--gold); border: none; border-radius: 6px;
+  font-size: 12px; font-family: var(--font); font-weight: 600; color: #1c1c1d; cursor: pointer;
+}
+.btn-apply:hover { background: var(--gold-light); }
+
+.filter-seg select {
+  background: var(--bg-2); border: 1px solid var(--rule); border-radius: 6px;
+  padding: 7px 30px 7px 10px; font-size: 12px; font-family: var(--font); color: var(--ink);
+  outline: none; cursor: pointer; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238a857c' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
+}
+.filter-seg select:focus { border-color: var(--gold-line); }
+
+/* Table */
+.table-wrap { padding: 24px 32px; overflow-x: auto; }
+.leads-count { font-size: 12px; color: var(--ink-faint); margin-bottom: 16px; letter-spacing: 0.05em; }
+
+.loading { text-align: center; padding: 60px; font-size: 14px; color: var(--ink-faint); }
+.empty { text-align: center; padding: 60px; font-size: 14px; color: var(--ink-faint); }
+
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th {
+  text-align: left; padding: 10px 14px; font-size: 11px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint);
+  border-bottom: 1px solid var(--rule); white-space: nowrap;
+}
+tbody tr { border-bottom: 1px solid var(--rule); transition: background 0.15s; }
+tbody tr:hover { background: var(--bg-1); }
+tbody td { padding: 12px 14px; vertical-align: middle; color: var(--ink-muted); }
+tbody td.name { color: var(--ink); font-weight: 500; }
+tbody td.date { font-size: 11px; color: var(--ink-faint); white-space: nowrap; }
+
+.badge {
+  display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 500;
+}
+.badge-tipo { background: rgba(187,160,90,0.1); color: var(--gold); border: 1px solid var(--gold-line); }
+.badge-seg { background: rgba(255,255,255,0.05); color: var(--ink-muted); border: 1px solid var(--rule); }
+
+.thumb {
+  width: 48px; height: 48px; border-radius: 6px; object-fit: cover;
+  border: 1px solid var(--rule); cursor: pointer; transition: transform 0.2s;
+}
+.thumb:hover { transform: scale(1.1); }
+.no-img { width: 48px; height: 48px; border-radius: 6px; background: var(--bg-3); border: 1px solid var(--rule); display: flex; align-items: center; justify-content: center; }
+.no-img svg { opacity: 0.3; }
+
+.btn-wa {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 12px; background: #25D366; border: none; border-radius: 6px;
+  font-size: 12px; font-family: var(--font); font-weight: 500; color: #fff; cursor: pointer;
+  white-space: nowrap;
+}
+.btn-wa:hover { background: #20BD5A; }
+
+.desc-cell { max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: help; }
+
+/* Lightbox */
+.lightbox {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+  z-index: 1000; align-items: center; justify-content: center; padding: 24px;
+}
+.lightbox.open { display: flex; }
+.lightbox img { max-width: 90vw; max-height: 90vh; border-radius: 8px; }
+.lightbox-close {
+  position: absolute; top: 20px; right: 24px; background: none; border: none;
+  color: #fff; font-size: 28px; cursor: pointer; opacity: 0.7;
+}
+.lightbox-close:hover { opacity: 1; }
+
+@media (max-width: 768px) {
+  .admin-header { padding: 12px 16px; }
+  .filters-bar { padding: 12px 16px; }
+  .table-wrap { padding: 16px; }
+  .header-stat { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="login-wrap">
+  <div class="login-box">
+    <img src="https://tocoin.com.br/wp-content/uploads/2026/03/LogoTocoinpq.png" alt="Tocoin">
+    <h2>Painel de Leads</h2>
+    <p>Digite a senha para acessar</p>
+    <input type="password" id="senha-input" placeholder="••••••" onkeydown="if(event.key==='Enter') entrar()">
+    <button class="btn-login" onclick="entrar()">Entrar</button>
+    <p class="login-error" id="login-error">Senha incorreta. Tente novamente.</p>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="admin-wrap" id="admin-wrap">
+
+  <div class="admin-header">
+    <img src="https://tocoin.com.br/wp-content/uploads/2026/03/LogoTocoinpq.png" alt="Tocoin">
+    <div class="admin-header-right">
+      <div class="header-stat">
+        <div class="num" id="stat-total">—</div>
+        <div class="lbl">Total de leads</div>
+      </div>
+      <div class="header-stat">
+        <div class="num" id="stat-hoje">—</div>
+        <div class="lbl">Hoje</div>
+      </div>
+      <button class="btn-logout" onclick="sair()">Sair</button>
+    </div>
+  </div>
+
+  <div class="filters-bar">
+    <div class="filter-group">
+      <button class="btn-filter active" onclick="filtrarPeriodo('hoje', this)">Hoje</button>
+      <button class="btn-filter" onclick="filtrarPeriodo('semana', this)">Esta semana</button>
+      <button class="btn-filter" onclick="filtrarPeriodo('mes', this)">Este mês</button>
+      <button class="btn-filter" onclick="filtrarPeriodo('todos', this)">Todos</button>
+    </div>
+
+    <div class="filter-sep"></div>
+
+    <div class="date-inputs">
+      <input type="date" id="data-inicio" onchange="filtrarPeriodo('custom', null)">
+      <span>até</span>
+      <input type="date" id="data-fim" onchange="filtrarPeriodo('custom', null)">
+    </div>
+
+    <div class="filter-sep"></div>
+
+    <div class="filter-seg">
+      <select id="filtro-segmento" onchange="aplicarFiltros()">
+        <option value="">Todos os segmentos</option>
+        <option>Polícia Militar</option>
+        <option>Empresa Privada</option>
+        <option>Forças Armadas</option>
+        <option>Bombeiro</option>
+        <option>Polícia Civil</option>
+        <option>Polícia Federal</option>
+        <option>Polícia Rodoviária Federal</option>
+        <option>Polícia Penal</option>
+        <option>Governo</option>
+        <option>Instituição</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <div class="leads-count" id="leads-count"></div>
+    <div class="loading" id="loading">Carregando leads...</div>
+    <div class="empty" id="empty" style="display:none;">Nenhum lead encontrado para o filtro selecionado.</div>
+    <table id="leads-table" style="display:none;">
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Nome</th>
+          <th>WhatsApp</th>
+          <th>E-mail</th>
+          <th>Tipo</th>
+          <th>Banho</th>
+          <th>Cores</th>
+          <th>Descrição</th>
+          <th>Imagem</th>
+          <th>Qtd</th>
+          <th>Prazo</th>
+          <th>Segmento</th>
+          <th>Instituição</th>
+        </tr>
+      </thead>
+      <tbody id="leads-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="fecharLightbox()">
+  <button class="lightbox-close" onclick="fecharLightbox()">×</button>
+  <img id="lightbox-img" src="" alt="Visualização">
+</div>
+
+<script>
+  const SENHA = '959911';
+  const SUPABASE_URL = 'https://pvzrlcjkdwueouxtaemg.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2enJsY2prZHd1ZW91eHRhZW1nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2MTEzNDYsImV4cCI6MjA5MzE4NzM0Nn0.3xXiaBPQLx8BkmRwEdoD87OqRqW_i6CftfdURfVFS40';
+
+  let todosLeads = [];
+  let periodoAtual = 'hoje';
+  let dataInicio = null;
+  let dataFim = null;
+
+  function entrar() {
+    const senha = document.getElementById('senha-input').value;
+    if (senha === SENHA) {
+      document.getElementById('login-wrap').style.display = 'none';
+      document.getElementById('admin-wrap').style.display = 'block';
+      carregarLeads();
+    } else {
+      document.getElementById('login-error').style.display = 'block';
+      document.getElementById('senha-input').value = '';
+      document.getElementById('senha-input').focus();
+    }
+  }
+
+  function sair() {
+    document.getElementById('login-wrap').style.display = 'flex';
+    document.getElementById('admin-wrap').style.display = 'none';
+    document.getElementById('senha-input').value = '';
+  }
+
+  async function carregarLeads() {
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/leads?select=*&order=criado_em.desc`,
+        { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+      );
+      todosLeads = await res.json();
+      atualizarStats();
+      aplicarFiltros();
+    } catch(e) {
+      document.getElementById('loading').textContent = 'Erro ao carregar leads: ' + e.message;
+    }
+  }
+
+  function atualizarStats() {
+    document.getElementById('stat-total').textContent = todosLeads.length;
+    const hoje = new Date().toDateString();
+    const hojeCount = todosLeads.filter(l => new Date(l.criado_em).toDateString() === hoje).length;
+    document.getElementById('stat-hoje').textContent = hojeCount;
+  }
+
+  function filtrarPeriodo(periodo, btn) {
+    periodoAtual = periodo;
+    if (btn) {
+      document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+    if (periodo !== 'custom') {
+      document.getElementById('data-inicio').value = '';
+      document.getElementById('data-fim').value = '';
+    }
+    aplicarFiltros();
+  }
+
+  function aplicarFiltros() {
+    const segmento = document.getElementById('filtro-segmento').value;
+    const dataInicioVal = document.getElementById('data-inicio').value;
+    const dataFimVal = document.getElementById('data-fim').value;
+
+    const agora = new Date();
+    const hoje = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate());
+
+    let filtrados = todosLeads.filter(lead => {
+      const data = new Date(lead.criado_em);
+
+      // Period filter
+      if (periodoAtual === 'hoje') {
+        if (data < hoje) return false;
+      } else if (periodoAtual === 'semana') {
+        const semana = new Date(hoje); semana.setDate(hoje.getDate() - 7);
+        if (data < semana) return false;
+      } else if (periodoAtual === 'mes') {
+        const mes = new Date(hoje); mes.setDate(hoje.getDate() - 30);
+        if (data < mes) return false;
+      } else if (periodoAtual === 'custom') {
+        if (dataInicioVal) {
+          const ini = new Date(dataInicioVal + 'T00:00:00');
+          if (data < ini) return false;
+        }
+        if (dataFimVal) {
+          const fim = new Date(dataFimVal + 'T23:59:59');
+          if (data > fim) return false;
+        }
+      }
+
+      // Segmento filter
+      if (segmento && lead.segmento !== segmento) return false;
+
+      return true;
+    });
+
+    renderLeads(filtrados);
+  }
+
+  function renderLeads(leads) {
+    document.getElementById('loading').style.display = 'none';
+
+    if (leads.length === 0) {
+      document.getElementById('empty').style.display = 'block';
+      document.getElementById('leads-table').style.display = 'none';
+      document.getElementById('leads-count').textContent = '';
+      return;
+    }
+
+    document.getElementById('empty').style.display = 'none';
+    document.getElementById('leads-table').style.display = 'table';
+    document.getElementById('leads-count').textContent = `${leads.length} lead${leads.length !== 1 ? 's' : ''} encontrado${leads.length !== 1 ? 's' : ''}`;
+
+    const tbody = document.getElementById('leads-body');
+    tbody.innerHTML = leads.map(l => {
+      const data = new Date(l.criado_em);
+      const dataStr = data.toLocaleDateString('pt-BR') + ' ' + data.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+      const desc = (l.descricao || '—').substring(0, 60) + (l.descricao?.length > 60 ? '...' : '');
+      const waMsg = encodeURIComponent(`Olá ${l.nome}! Vi que você criou uma visualização no Visualizador da Tocoin. Posso te ajudar com um orçamento?`);
+      const waNum = (l.telefone || '').replace(/\D/g, '');
+
+      const imgCell = l.imagem_url
+        ? `<img class="thumb" src="${l.imagem_url}" alt="Preview" onclick="abrirLightbox('${l.imagem_url}')">`
+        : `<div class="no-img"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8a857c" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>`;
+
+      return `<tr>
+        <td class="date">${dataStr}</td>
+        <td class="name">${l.nome || '—'}</td>
+        <td>${waNum ? `<button class="btn-wa" onclick="window.open('https://wa.me/55${waNum}?text=${waMsg}','_blank')"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>${l.telefone}</button>` : '—'}</td>
+        <td>${l.email || '—'}</td>
+        <td><span class="badge badge-tipo">${l.tipo || '—'}</span></td>
+        <td>${l.material || '—'}</td>
+        <td>${l.cores || '—'}</td>
+        <td class="desc-cell" title="${l.descricao || ''}">${desc}</td>
+        <td>${imgCell}</td>
+        <td>${l.quantidade || '—'}</td>
+        <td>${l.prazo || '—'}</td>
+        <td><span class="badge badge-seg">${l.segmento || '—'}</span></td>
+        <td>${l.instituicao || '—'}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  function abrirLightbox(url) {
+    document.getElementById('lightbox-img').src = url;
+    document.getElementById('lightbox').classList.add('open');
+  }
+
+  function fecharLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') fecharLightbox();
+    if (e.key === 'Enter' && document.getElementById('login-wrap').style.display !== 'none') entrar();
+  });
+</script>
+</body>
+</html>

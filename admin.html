@@ -116,11 +116,11 @@ tbody tr { border-bottom: 1px solid #f0f0f0; transition: background 0.15s; }
 
 tbody tr:hover { background: #fff8ee; }
 tbody td { padding: 12px 14px; vertical-align: middle; color: #444; font-weight: 400; font-size: 13px; }
-tbody td.name { color: #111; font-weight: 700; font-size: 14px; }
+tbody td.name { color: #444; font-weight: 400; font-size: 13px; }
 tbody td.date { font-size: 12px; color: #777; white-space: nowrap; font-weight: 500; }
 
 .badge { font-size: 13px; }
-.badge-tipo { color: #8a6a2a; font-weight: 500; }
+.badge-tipo { color: #444; font-weight: 400; font-size: 13px; }
 .badge-seg { color: #555; }
 
 .thumb {
@@ -249,6 +249,18 @@ tr.status-nao-qualificado:hover { background: #ffe0e0 !important; }
     </div>
 
     <div class="filter-sep"></div>
+
+    <div class="filter-seg">
+      <select id="filtro-status" onchange="aplicarFiltros()">
+        <option value="">Todos os status</option>
+        <option value="Novo">Novo</option>
+        <option value="Em atendimento">Em atendimento</option>
+        <option value="Qualificado">Qualificado</option>
+        <option value="Não qualificado">Não qualificado</option>
+      </select>
+    </div>
+
+    <div class="filter-sep"></div>
     <div style="font-size: 11px; color: var(--ink-faint);" id="ultimo-update"></div>
   </div>
 
@@ -368,6 +380,7 @@ tr.status-nao-qualificado:hover { background: #ffe0e0 !important; }
 
   function aplicarFiltros() {
     const segmento = document.getElementById('filtro-segmento').value;
+    const statusFiltro = document.getElementById('filtro-status').value;
     const dataInicioVal = document.getElementById('data-inicio').value;
     const dataFimVal = document.getElementById('data-fim').value;
 
@@ -399,6 +412,7 @@ tr.status-nao-qualificado:hover { background: #ffe0e0 !important; }
 
       // Segmento filter
       if (segmento && lead.segmento !== segmento) return false;
+      if (statusFiltro && (lead.status || 'Novo') !== statusFiltro) return false;
 
       return true;
     });

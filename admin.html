@@ -119,11 +119,9 @@ tbody td { padding: 12px 14px; vertical-align: middle; color: #555; }
 tbody td.name { color: #222; font-weight: 600; }
 tbody td.date { font-size: 11px; color: #999; white-space: nowrap; }
 
-.badge {
-  display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 500;
-}
-.badge-tipo { background: rgba(187,160,90,0.12); color: #8a6a2a; border: 1px solid rgba(187,160,90,0.3); }
-.badge-seg { background: #f0f0f0; color: #666; border: 1px solid #ddd; }
+.badge { font-size: 13px; }
+.badge-tipo { color: #8a6a2a; font-weight: 500; }
+.badge-seg { color: #555; }
 
 .thumb {
   width: 48px; height: 48px; border-radius: 6px; object-fit: cover;
@@ -415,9 +413,10 @@ tbody td.date { font-size: 11px; color: #999; white-space: nowrap; }
       const waMsg = encodeURIComponent(`Olá ${l.nome}! Vi que você criou uma visualização no Visualizador da Tocoin. Posso te ajudar com um orçamento?`);
       const waNum = (l.telefone || '').replace(/\D/g, '');
 
-      const imgCell = l.imagem_url
-        ? `<img class="thumb" src="${l.imagem_url}" alt="Preview" onclick="abrirLightbox('${l.imagem_url}')">`
-        : `<div class="no-img"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8a857c" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>`;
+      const imgUrl = l.imagem_url || null;
+      const imgCell = imgUrl
+        ? `<img class="thumb" src="${imgUrl}" alt="Preview" onclick="abrirLightbox('${imgUrl}')">`
+        : `<div class="no-img"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>`;
 
       return `<tr>
         <td class="date">${dataStr}</td>

@@ -139,18 +139,7 @@ async function enviarEmailLead(lead, imagemUrl) {
               <td style="padding: 10px 0; color: #999;">Tipo</td>
               <td style="padding: 10px 0; color: #222;">${lead.tipo || '—'}</td>
             </tr>
-            <tr style="border-bottom: 1px solid #f0f0f0;">
-              <td style="padding: 10px 0; color: #999;">Banho</td>
-              <td style="padding: 10px 0; color: #222;">${lead.material || '—'}</td>
-            </tr>
-            <tr style="border-bottom: 1px solid #f0f0f0;">
-              <td style="padding: 10px 0; color: #999;">Cores</td>
-              <td style="padding: 10px 0; color: #222;">${lead.cores || '—'}</td>
-            </tr>
-            <tr style="border-bottom: 1px solid #f0f0f0;">
-              <td style="padding: 10px 0; color: #999; vertical-align: top;">Descrição</td>
-              <td style="padding: 10px 0; color: #222;">${lead.descricao || '—'}</td>
-            </tr>
+
             <tr style="border-bottom: 1px solid #f0f0f0;">
               <td style="padding: 10px 0; color: #999;">Quantidade</td>
               <td style="padding: 10px 0; color: #222;">${lead.quantidade || '—'}</td>

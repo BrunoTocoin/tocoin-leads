@@ -146,9 +146,25 @@ async function enviarEmailLead(lead, imagemUrl) {
               <td style="padding: 10px 0; color: #999;">Cores</td>
               <td style="padding: 10px 0; color: #222;">${lead.cores || '—'}</td>
             </tr>
-            <tr>
+            <tr style="border-bottom: 1px solid #f0f0f0;">
               <td style="padding: 10px 0; color: #999; vertical-align: top;">Descrição</td>
               <td style="padding: 10px 0; color: #222;">${lead.descricao || '—'}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #f0f0f0;">
+              <td style="padding: 10px 0; color: #999;">Quantidade</td>
+              <td style="padding: 10px 0; color: #222;">${lead.quantidade || '—'}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #f0f0f0;">
+              <td style="padding: 10px 0; color: #999;">Prazo</td>
+              <td style="padding: 10px 0; color: #222;">${lead.prazo || '—'}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #f0f0f0;">
+              <td style="padding: 10px 0; color: #999;">Segmento</td>
+              <td style="padding: 10px 0; color: #222;">${lead.segmento || '—'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 0; color: #999;">Instituição</td>
+              <td style="padding: 10px 0; color: #222;">${lead.instituicao || '—'}</td>
             </tr>
           </table>
 
@@ -346,16 +362,7 @@ const server = http.createServer(async (req, res) => {
           await atualizarImagemLead(leadId, email, imagemUrl);
         }
 
-        // Send email notification
-        const leadData = { nome: '', telefone: '', email, tipo, material, cores };
-        try {
-          const supRes = await fetch(
-            `${SUPABASE_URL}/rest/v1/leads?${leadId ? `id=eq.${leadId}` : `email=eq.${encodeURIComponent(email)}`}&select=*&limit=1`,
-            { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
-          );
-          const rows = await supRes.json();
-          if (rows && rows[0]) await enviarEmailLead(rows[0], imagemUrl);
-        } catch(e) { console.warn('[EMAIL] Skip:', e.message); }
+
 
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ success: true, ...imageData, imagemUrl }));
@@ -422,6 +429,25 @@ const server = http.createServer(async (req, res) => {
         console.log('[LEAD-UPDATE] Status:', supRes.status, resText);
         res.writeHead(supRes.ok ? 200 : 500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ success: supRes.ok }));
+
+        // Send email with complete lead data after update
+        if (supRes.ok) {
+          try {
+            const filter = id ? `id=eq.${id}` : `email=eq.${encodeURIComponent(email)}`;
+            const leadRes = await fetch(
+              `${SUPABASE_URL}/rest/v1/leads?${filter}&select=*&limit=1`,
+              { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+            );
+            const rows = await leadRes.json();
+            if (rows && rows[0]) {
+              const fullLead = {
+                ...rows[0],
+                quantidade, prazo, segmento, instituicao
+              };
+              await enviarEmailLead(fullLead, rows[0].imagem_url);
+            }
+          } catch(e) { console.warn('[EMAIL] Skip:', e.message); }
+        }
       } catch(e) {
         console.error('[LEAD-UPDATE] Erro:', e.message);
         res.writeHead(500, { 'Content-Type': 'application/json' });

@@ -126,6 +126,13 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  if (req.method === 'GET' && req.url === '/admin') {
+    const html = fs.readFileSync(path.join(__dirname, 'admin.html'), 'utf8');
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    res.end(html);
+    return;
+  }
+
   if (req.method === 'GET' && req.url === '/logo-tocoin.png') {
     const img = fs.readFileSync(path.join(__dirname, 'logo-tocoin.png'));
     res.writeHead(200, { 'Content-Type': 'image/png' });

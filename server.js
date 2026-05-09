@@ -7,6 +7,58 @@ const GEMINI_KEY = process.env.GEMINI_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY;
 
+const LIMITE_GERACOES = 3;
+
+async function verificarLimite(email) {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/leads?email=eq.${encodeURIComponent(email)}&select=total_geracoes`,
+      {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`
+        }
+      }
+    );
+    const rows = await res.json();
+    if (!rows || rows.length === 0) return { permitido: true, total: 0 };
+    const total = rows[0].total_geracoes || 0;
+    return { permitido: total < LIMITE_GERACOES, total };
+  } catch(e) {
+    console.warn('[LIMITE] Erro ao verificar:', e.message);
+    return { permitido: true, total: 0 };
+  }
+}
+
+async function incrementarGeracoes(email, leadId) {
+  try {
+    const filter = leadId ? `id=eq.${leadId}` : `email=eq.${encodeURIComponent(email)}`;
+    await fetch(`${SUPABASE_URL}/rest/v1/leads?${filter}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ total_geracoes: await getTotal(email) + 1 })
+    });
+  } catch(e) {
+    console.warn('[LIMITE] Erro ao incrementar:', e.message);
+  }
+}
+
+async function getTotal(email) {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/leads?email=eq.${encodeURIComponent(email)}&select=total_geracoes`,
+      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+    );
+    const rows = await res.json();
+    return rows?.[0]?.total_geracoes || 0;
+  } catch(e) { return 0; }
+}
+
 async function uploadImagem(imageBase64, mimeType, leadEmail) {
   try {
     const ext = mimeType.includes('png') ? 'png' : 'jpg';
@@ -88,6 +140,20 @@ const server = http.createServer(async (req, res) => {
       try {
         const { promptLado1, promptLado2, tipo, material, cores, imageBase64, leadId, email } = JSON.parse(body);
 
+        // Check generation limit
+        if (email) {
+          const { permitido, total } = await verificarLimite(email);
+          if (!permitido) {
+            res.writeHead(429, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ 
+              success: false, 
+              limitExceeded: true,
+              error: `Limite de ${LIMITE_GERACOES} visualizações atingido para este e-mail.`
+            }));
+            return;
+          }
+        }
+
         const tipoMap = {
           'Moeda Personalizada': 'challenge coin',
           'Brevê Militar': 'military brevet pin badge'
@@ -161,6 +227,9 @@ const server = http.createServer(async (req, res) => {
           res.end(JSON.stringify({ success: false, error: erroFinal }));
           return;
         }
+
+        // Increment generation counter
+        if (email) await incrementarGeracoes(email, leadId);
 
         // Upload image to Supabase Storage
         const imagemUrl = await uploadImagem(imageData.data, imageData.mimeType, email || `lead_${Date.now()}`);

@@ -121,16 +121,50 @@ const server = http.createServer(async (req, res) => {
             'Content-Type': 'application/json',
             'apikey': SUPABASE_KEY,
             'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Prefer': 'return=minimal'
+            'Prefer': 'return=representation'
           },
           body: JSON.stringify(lead)
         });
         const resText = await supRes.text();
         console.log('[LEAD] Status:', supRes.status, resText);
+        let leadId = null;
+        try { const rows = JSON.parse(resText); if (rows[0]?.id) leadId = rows[0].id; } catch(e) {}
+        res.writeHead(supRes.ok ? 200 : 500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: supRes.ok, id: leadId }));
+      } catch(e) {
+        console.error('[LEAD] Erro:', e.message);
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: e.message }));
+      }
+    });
+    return;
+  }
+
+  if (req.method === 'POST' && req.url === '/api/lead-update') {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', async () => {
+      try {
+        const { id, email, quantidade, prazo, segmento, instituicao } = JSON.parse(body);
+        console.log('[LEAD-UPDATE] id:', id, 'email:', email);
+        // Update by id if available, fallback to email
+        const filter = id ? `id=eq.${id}` : `email=eq.${encodeURIComponent(email)}`;
+        const supRes = await fetch(`${SUPABASE_URL}/rest/v1/leads?${filter}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify({ quantidade, prazo, segmento, instituicao })
+        });
+        const resText = await supRes.text();
+        console.log('[LEAD-UPDATE] Status:', supRes.status, resText);
         res.writeHead(supRes.ok ? 200 : 500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ success: supRes.ok }));
       } catch(e) {
-        console.error('[LEAD] Erro:', e.message);
+        console.error('[LEAD-UPDATE] Erro:', e.message);
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ success: false, error: e.message }));
       }

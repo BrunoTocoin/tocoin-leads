@@ -55,6 +55,9 @@ body { background: var(--bg); color: var(--ink); font-family: var(--font); font-
 .header-stat .num { font-size: 22px; font-weight: 700; color: var(--gold); }
 .header-stat .lbl { font-size: 11px; color: var(--ink-faint); letter-spacing: 0.1em; text-transform: uppercase; }
 .btn-logout { background: transparent; border: 1px solid var(--rule); border-radius: 6px; padding: 8px 14px; font-size: 12px; font-family: var(--font); color: var(--ink-faint); cursor: pointer; }
+.btn-nav { background: transparent; border: 1px solid var(--rule); border-radius: 6px; padding: 8px 14px; font-size: 12px; font-family: var(--font); color: var(--ink-faint); cursor: pointer; transition: all 0.2s; }
+.btn-nav:hover { border-color: var(--gold-line); color: var(--ink); }
+.btn-nav.active { background: var(--gold); border-color: var(--gold); color: #1c1c1d; font-weight: 600; }
 .btn-logout:hover { border-color: var(--gold-line); color: var(--ink); }
 
 /* Filters */
@@ -97,29 +100,30 @@ body { background: var(--bg); color: var(--ink); font-family: var(--font); font-
 .filter-seg select:focus { border-color: var(--gold-line); }
 
 /* Table */
-.table-wrap { padding: 24px 32px; overflow-x: auto; }
-.leads-count { font-size: 12px; color: var(--ink-faint); margin-bottom: 16px; letter-spacing: 0.05em; }
+.table-wrap { padding: 24px 32px; overflow-x: auto; background: #ffffff; min-height: calc(100vh - 120px); }
+.leads-count { font-size: 12px; color: #888; margin-bottom: 16px; letter-spacing: 0.05em; }
 
-.loading { text-align: center; padding: 60px; font-size: 14px; color: var(--ink-faint); }
-.empty { text-align: center; padding: 60px; font-size: 14px; color: var(--ink-faint); }
+.loading { text-align: center; padding: 60px; font-size: 14px; color: #aaa; }
+.empty { text-align: center; padding: 60px; font-size: 14px; color: #aaa; }
 
 table { width: 100%; border-collapse: collapse; font-size: 13px; }
 thead th {
   text-align: left; padding: 10px 14px; font-size: 11px; font-weight: 600;
-  letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint);
-  border-bottom: 1px solid var(--rule); white-space: nowrap;
+  letter-spacing: 0.1em; text-transform: uppercase; color: #888;
+  border-bottom: 2px solid #e5e5e5; white-space: nowrap; background: #fff;
 }
-tbody tr { border-bottom: 1px solid var(--rule); transition: background 0.15s; }
-tbody tr:hover { background: var(--bg-1); }
-tbody td { padding: 12px 14px; vertical-align: middle; color: var(--ink-muted); }
-tbody td.name { color: var(--ink); font-weight: 500; }
-tbody td.date { font-size: 11px; color: var(--ink-faint); white-space: nowrap; }
+tbody tr { border-bottom: 1px solid #f0f0f0; transition: background 0.15s; }
+tbody tr:nth-child(even) { background: #f8f8f8; }
+tbody tr:hover { background: #fff8ee; }
+tbody td { padding: 12px 14px; vertical-align: middle; color: #555; }
+tbody td.name { color: #222; font-weight: 600; }
+tbody td.date { font-size: 11px; color: #999; white-space: nowrap; }
 
 .badge {
   display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 500;
 }
-.badge-tipo { background: rgba(187,160,90,0.1); color: var(--gold); border: 1px solid var(--gold-line); }
-.badge-seg { background: rgba(255,255,255,0.05); color: var(--ink-muted); border: 1px solid var(--rule); }
+.badge-tipo { background: rgba(187,160,90,0.12); color: #8a6a2a; border: 1px solid rgba(187,160,90,0.3); }
+.badge-seg { background: #f0f0f0; color: #666; border: 1px solid #ddd; }
 
 .thumb {
   width: 48px; height: 48px; border-radius: 6px; object-fit: cover;
@@ -151,6 +155,10 @@ tbody td.date { font-size: 11px; color: var(--ink-faint); white-space: nowrap; }
   color: #fff; font-size: 28px; cursor: pointer; opacity: 0.7;
 }
 .lightbox-close:hover { opacity: 1; }
+
+.stat-card { background: #fff; border-radius: 12px; padding: 20px 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); text-align: center; }
+.stat-num { font-size: 36px; font-weight: 700; color: #bba05a; line-height: 1; }
+.stat-lbl { font-size: 11px; color: #999; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 6px; }
 
 @media (max-width: 768px) {
   .admin-header { padding: 12px 16px; }
@@ -188,24 +196,26 @@ tbody td.date { font-size: 11px; color: var(--ink-faint); white-space: nowrap; }
         <div class="num" id="stat-hoje">—</div>
         <div class="lbl">Hoje</div>
       </div>
+      <button class="btn-nav" id="btn-dash" onclick="mostrarDash()">Dashboard</button>
+      <button class="btn-nav active" id="btn-leads" onclick="mostrarLeads()">Leads</button>
       <button class="btn-logout" onclick="sair()">Sair</button>
     </div>
   </div>
 
-  <div class="filters-bar">
+  <div class="filters-bar" id="filters-bar-id">
     <div class="filter-group">
-      <button class="btn-filter active" onclick="filtrarPeriodo('hoje', this)">Hoje</button>
-      <button class="btn-filter" onclick="filtrarPeriodo('semana', this)">Esta semana</button>
-      <button class="btn-filter" onclick="filtrarPeriodo('mes', this)">Este mês</button>
-      <button class="btn-filter" onclick="filtrarPeriodo('todos', this)">Todos</button>
+      <button class="btn-filter active" onclick="filtrarPeriodo('todos', this)">Todos</button>
+      <button class="btn-filter" onclick="filtrarPeriodo('hoje', this)">Hoje</button>
+      <button class="btn-filter" onclick="filtrarPeriodo('semana', this)">Semana</button>
+      <button class="btn-filter" onclick="filtrarPeriodo('mes', this)">Mês</button>
+      <button class="btn-filter" onclick="filtrarPeriodo('custom', this)">Período</button>
     </div>
 
-    <div class="filter-sep"></div>
-
-    <div class="date-inputs">
-      <input type="date" id="data-inicio" onchange="filtrarPeriodo('custom', null)">
-      <span>até</span>
-      <input type="date" id="data-fim" onchange="filtrarPeriodo('custom', null)">
+    <div class="date-inputs" id="date-inputs-wrap" style="display:none;">
+      <span>de</span>
+      <input type="date" id="data-inicio" onchange="aplicarFiltros()">
+      <span>a</span>
+      <input type="date" id="data-fim" onchange="aplicarFiltros()">
     </div>
 
     <div class="filter-sep"></div>
@@ -225,9 +235,39 @@ tbody td.date { font-size: 11px; color: var(--ink-faint); white-space: nowrap; }
         <option>Instituição</option>
       </select>
     </div>
+
+    <div class="filter-sep"></div>
+    <div style="font-size: 11px; color: var(--ink-faint);" id="ultimo-update"></div>
   </div>
 
-  <div class="table-wrap">
+  <!-- DASHBOARD -->
+  <div id="dash-wrap" style="display:none; padding: 24px 32px; background: #f5f5f5; min-height: calc(100vh - 120px);">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 1200px; margin: 0 auto;">
+
+      <!-- Leads por dia -->
+      <div style="background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.08);">
+        <h3 style="font-size: 14px; font-weight: 600; color: #333; margin-bottom: 20px; letter-spacing: 0.05em; text-transform: uppercase;">Leads por dia</h3>
+        <canvas id="chart-dias" height="280"></canvas>
+      </div>
+
+      <!-- Leads por segmento -->
+      <div style="background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.08);">
+        <h3 style="font-size: 14px; font-weight: 600; color: #333; margin-bottom: 20px; letter-spacing: 0.05em; text-transform: uppercase;">Leads por segmento</h3>
+        <canvas id="chart-segmentos" height="280"></canvas>
+      </div>
+
+    </div>
+
+    <!-- Summary cards -->
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; max-width: 1200px; margin: 24px auto 0;">
+      <div class="stat-card"><div class="stat-num" id="dash-total">—</div><div class="stat-lbl">Total de leads</div></div>
+      <div class="stat-card"><div class="stat-num" id="dash-hoje">—</div><div class="stat-lbl">Hoje</div></div>
+      <div class="stat-card"><div class="stat-num" id="dash-semana">—</div><div class="stat-lbl">Esta semana</div></div>
+      <div class="stat-card"><div class="stat-num" id="dash-mes">—</div><div class="stat-lbl">Este mês</div></div>
+    </div>
+  </div>
+
+  <div class="table-wrap" id="table-wrap-id">
     <div class="leads-count" id="leads-count"></div>
     <div class="loading" id="loading">Carregando leads...</div>
     <div class="empty" id="empty" style="display:none;">Nenhum lead encontrado para o filtro selecionado.</div>
@@ -239,9 +279,6 @@ tbody td.date { font-size: 11px; color: var(--ink-faint); white-space: nowrap; }
           <th>WhatsApp</th>
           <th>E-mail</th>
           <th>Tipo</th>
-          <th>Banho</th>
-          <th>Cores</th>
-          <th>Descrição</th>
           <th>Imagem</th>
           <th>Qtd</th>
           <th>Prazo</th>
@@ -266,22 +303,11 @@ tbody td.date { font-size: 11px; color: var(--ink-faint); white-space: nowrap; }
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2enJsY2prZHd1ZW91eHRhZW1nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2MTEzNDYsImV4cCI6MjA5MzE4NzM0Nn0.3xXiaBPQLx8BkmRwEdoD87OqRqW_i6CftfdURfVFS40';
 
   let todosLeads = [];
-  let periodoAtual = 'hoje';
+  let periodoAtual = 'todos';
   let dataInicio = null;
   let dataFim = null;
 
-  function entrar() {
-    const senha = document.getElementById('senha-input').value;
-    if (senha === SENHA) {
-      document.getElementById('login-wrap').style.display = 'none';
-      document.getElementById('admin-wrap').style.display = 'block';
-      carregarLeads();
-    } else {
-      document.getElementById('login-error').style.display = 'block';
-      document.getElementById('senha-input').value = '';
-      document.getElementById('senha-input').focus();
-    }
-  }
+
 
   function sair() {
     document.getElementById('login-wrap').style.display = 'flex';
@@ -316,7 +342,11 @@ tbody td.date { font-size: 11px; color: var(--ink-faint); white-space: nowrap; }
       document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
     }
-    if (periodo !== 'custom') {
+    const dateWrap = document.getElementById('date-inputs-wrap');
+    if (periodo === 'custom') {
+      dateWrap.style.display = 'flex';
+    } else {
+      dateWrap.style.display = 'none';
       document.getElementById('data-inicio').value = '';
       document.getElementById('data-fim').value = '';
     }
@@ -395,9 +425,6 @@ tbody td.date { font-size: 11px; color: var(--ink-faint); white-space: nowrap; }
         <td>${waNum ? `<button class="btn-wa" onclick="window.open('https://wa.me/55${waNum}?text=${waMsg}','_blank')"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>${l.telefone}</button>` : '—'}</td>
         <td>${l.email || '—'}</td>
         <td><span class="badge badge-tipo">${l.tipo || '—'}</span></td>
-        <td>${l.material || '—'}</td>
-        <td>${l.cores || '—'}</td>
-        <td class="desc-cell" title="${l.descricao || ''}">${desc}</td>
         <td>${imgCell}</td>
         <td>${l.quantidade || '—'}</td>
         <td>${l.prazo || '—'}</td>
@@ -420,6 +447,144 @@ tbody td.date { font-size: 11px; color: var(--ink-faint); white-space: nowrap; }
     if (e.key === 'Escape') fecharLightbox();
     if (e.key === 'Enter' && document.getElementById('login-wrap').style.display !== 'none') entrar();
   });
+
+  // Auto-refresh every 20 seconds
+  let refreshInterval = null;
+
+  function iniciarAutoRefresh() {
+    refreshInterval = setInterval(async () => {
+      if (document.getElementById('admin-wrap').style.display === 'none') return;
+      await carregarLeads();
+      const agora = new Date();
+      const hora = agora.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+      const el = document.getElementById('ultimo-update');
+      if (el) el.textContent = `Atualizado às ${hora}`;
+    }, 20000);
+  }
+
+  // Start auto-refresh after login
+  const origEntrar = entrar;
+  function entrar() {
+    const senha = document.getElementById('senha-input').value;
+    if (senha === SENHA) {
+      document.getElementById('login-wrap').style.display = 'none';
+      document.getElementById('admin-wrap').style.display = 'block';
+      carregarLeads();
+      iniciarAutoRefresh();
+    } else {
+      document.getElementById('login-error').style.display = 'block';
+      document.getElementById('senha-input').value = '';
+      document.getElementById('senha-input').focus();
+    }
+  }
+
+  let chartDias = null;
+  let chartSegmentos = null;
+
+  function mostrarDash() {
+    document.getElementById('dash-wrap').style.display = 'block';
+    document.getElementById('table-wrap-id').style.display = 'none';
+    document.getElementById('filters-bar-id').style.display = 'none';
+    document.getElementById('btn-dash').classList.add('active');
+    document.getElementById('btn-leads').classList.remove('active');
+    renderDash();
+  }
+
+  function mostrarLeads() {
+    document.getElementById('dash-wrap').style.display = 'none';
+    document.getElementById('table-wrap-id').style.display = 'block';
+    document.getElementById('filters-bar-id').style.display = 'flex';
+    document.getElementById('btn-leads').classList.add('active');
+    document.getElementById('btn-dash').classList.remove('active');
+  }
+
+  function renderDash() {
+    if (!todosLeads.length) return;
+
+    const agora = new Date();
+    const hoje = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate());
+    const semana = new Date(hoje); semana.setDate(hoje.getDate() - 7);
+    const mes = new Date(hoje); mes.setDate(hoje.getDate() - 30);
+
+    document.getElementById('dash-total').textContent = todosLeads.length;
+    document.getElementById('dash-hoje').textContent = todosLeads.filter(l => new Date(l.criado_em) >= hoje).length;
+    document.getElementById('dash-semana').textContent = todosLeads.filter(l => new Date(l.criado_em) >= semana).length;
+    document.getElementById('dash-mes').textContent = todosLeads.filter(l => new Date(l.criado_em) >= mes).length;
+
+    // Leads por dia (últimos 14 dias)
+    const diasMap = {};
+    for (let i = 13; i >= 0; i--) {
+      const d = new Date(hoje); d.setDate(hoje.getDate() - i);
+      const key = d.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
+      diasMap[key] = 0;
+    }
+    todosLeads.forEach(l => {
+      const d = new Date(l.criado_em);
+      const key = d.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
+      if (diasMap[key] !== undefined) diasMap[key]++;
+    });
+
+    const diasLabels = Object.keys(diasMap);
+    const diasData = Object.values(diasMap);
+
+    if (chartDias) chartDias.destroy();
+    const ctxDias = document.getElementById('chart-dias').getContext('2d');
+    chartDias = new Chart(ctxDias, {
+      type: 'bar',
+      data: {
+        labels: diasLabels,
+        datasets: [{
+          label: 'Leads',
+          data: diasData,
+          backgroundColor: 'rgba(187,160,90,0.7)',
+          borderColor: '#bba05a',
+          borderWidth: 1,
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, ticks: { stepSize: 1, color: '#999' }, grid: { color: '#f0f0f0' } },
+          x: { ticks: { color: '#999' }, grid: { display: false } }
+        }
+      }
+    });
+
+    // Leads por segmento
+    const segMap = {};
+    todosLeads.forEach(l => {
+      const seg = l.segmento || 'Não informado';
+      segMap[seg] = (segMap[seg] || 0) + 1;
+    });
+    const segLabels = Object.keys(segMap);
+    const segData = Object.values(segMap);
+    const cores = ['#bba05a','#d4b97a','#8a6a2a','#3d6b8a','#5a8a3d','#8a3d5a','#6b3d8a','#8a6b3d','#3d8a6b','#8a3d3d'];
+
+    if (chartSegmentos) chartSegmentos.destroy();
+    const ctxSeg = document.getElementById('chart-segmentos').getContext('2d');
+    chartSegmentos = new Chart(ctxSeg, {
+      type: 'doughnut',
+      data: {
+        labels: segLabels,
+        datasets: [{
+          data: segData,
+          backgroundColor: cores.slice(0, segLabels.length),
+          borderWidth: 2,
+          borderColor: '#fff'
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'right', labels: { font: { size: 12 }, color: '#555', padding: 16 } }
+        }
+      }
+    });
+  }
+
 </script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </body>
 </html>

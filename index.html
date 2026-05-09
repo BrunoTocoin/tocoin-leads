@@ -50,7 +50,7 @@
     --pad-card-x:    18px;
     --pad-card-y:    22px;
     --gap-field:     14px;
-    --container-max: 560px;
+    --container-max: 1100px;
 
     /* typography */
     --font-sans:    'Montserrat', system-ui, sans-serif;
@@ -288,11 +288,12 @@
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    font-size: 12.5px;
+    font-size: 12px;
     font-weight: 500;
     color: var(--ink-muted);
     margin-bottom: 7px;
     letter-spacing: 0.02em;
+    font-family: var(--font-sans);
   }
   label .hint {
     font-weight: 300;
@@ -305,7 +306,7 @@
     border: 1px solid var(--rule);
     border-radius: var(--radius-input);
     padding: 13px 14px;
-    font-size: 16px;
+    font-size: 14px;
     font-family: var(--font-sans);
     font-weight: 400;
     color: var(--ink);
@@ -343,7 +344,7 @@
     padding: 8px 14px;
     border: 1px solid var(--rule);
     border-radius: var(--radius-tag);
-    font-size: 12.5px;
+    font-size: 14px;
     font-weight: 400;
     color: var(--ink-muted);
     cursor: pointer;
@@ -579,12 +580,13 @@
 
   /* ── error ────────────────────────────────────────────── */
   .error-msg {
-    background: rgba(224,123,106,0.08);
-    border: 1px solid rgba(224,123,106,0.28);
+    background: rgba(224,123,106,0.15);
+    border: 1px solid rgba(224,123,106,0.6);
     border-radius: 8px;
-    padding: 11px 14px;
-    font-size: 13px;
-    color: var(--danger);
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #f0957f;
     margin-top: 12px;
     display: none;
     line-height: 1.5;
@@ -645,6 +647,132 @@
   footer a:hover { color: var(--gold); }
 
   canvas#watermark-canvas { display: none; }
+  /* ── Desktop layout ───────────────────────────────────── */
+  @media (min-width: 768px) {
+    .container {
+      padding: 0 40px;
+    }
+    header {
+      padding: 48px 0 24px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    .logo-img {
+      height: 120px;
+    }
+    h1 {
+      font-size: clamp(36px, 4vw, 52px);
+    }
+    .subtitle {
+      font-size: 16px;
+      max-width: 560px;
+    }
+
+    /* Single column centered by default */
+    .desktop-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      max-width: 620px;
+      margin: 0 auto;
+      gap: 0;
+    }
+
+    /* Switch to two columns when image is ready */
+    .desktop-layout.has-image {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      max-width: 100%;
+      gap: 32px;
+      align-items: start;
+    }
+
+    .desktop-left {
+      position: sticky;
+      top: 24px;
+    }
+
+    .desktop-right {
+      position: sticky;
+      top: 24px;
+    }
+
+    .desktop-preview-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(180deg, var(--bg-2) 0%, var(--bg-1) 100%);
+      border: 1px solid var(--rule);
+      border-radius: var(--radius-card);
+      padding: 48px 32px;
+      text-align: center;
+      min-height: 400px;
+    }
+
+    .desktop-preview-placeholder .coin-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 1px solid var(--gold-line-2);
+      background: var(--bg-3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+    }
+
+    .desktop-preview-placeholder p {
+      font-size: 14px;
+      color: var(--ink-faint);
+      line-height: 1.7;
+      max-width: 260px;
+    }
+
+    .desktop-result-img {
+      width: 100%;
+      border-radius: var(--radius-img);
+      border: 1px solid var(--rule);
+      display: block;
+    }
+
+    .desktop-result-title {
+      font-size: 13px;
+      color: var(--ink-faint);
+      text-align: center;
+      margin-top: 12px;
+      font-family: var(--font-mono);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+  }
+
+  select {
+    width: 100%;
+    background: var(--bg-3);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-input);
+    padding: 13px 14px;
+    font-size: 14px;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    color: var(--ink);
+    outline: none;
+    transition: all 0.18s var(--ease);
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a857c' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+    cursor: pointer;
+  }
+  select:hover { border-color: rgba(255,255,255,0.12); }
+  select:focus {
+    border-color: var(--gold-line-2);
+    box-shadow: 0 0 0 3px rgba(187,160,90,0.1);
+  }
+  select option { background: #3c3c3d; color: var(--ink); }
+
 
   /* ── density variants (driven by tweaks) ──────────────── */
   body[data-density="compact"] {
@@ -690,7 +818,7 @@
 
 <div class="container">
   <header>
-    <div class="eyebrow" style="font-family: Montserrat; font-size: 14px">Tocoin · Visualizador</div>
+    <div class="eyebrow" style="font-family: Montserrat; font-size: 14px">Visualizador Tocoin</div>
     <div class="logo-wrap">
       <img src="https://tocoin.com.br/wp-content/uploads/2026/03/LogoTocoinpq.png" class="logo-img" alt="Tocoin" id="logo-header" onerror="this.style.display='none'" >
     </div>
@@ -717,34 +845,50 @@
     </div>
   </nav>
 
+  <div class="desktop-layout">
+    <div class="desktop-left">
   <!-- STEP 1 -->
   <div class="card active" id="step-1">
-    <div class="card-eyebrow">
-      <span style="font-family: Montserrat; font-size: 12px">Passo 01</span>
-      <span class="meta" style="font-family: Montserrat; font-size: 12px">de 03</span>
-    </div>
-    <h2 class="card-title">Seus dados para liberar o visualizador</h2>
 
-    <div class="field">
-      <label style="font-size: 12px">Nome completo</label>
-      <input type="text" id="nome" placeholder="Seu nome" autocomplete="name">
+    <!-- Intro screen -->
+    <div id="intro-screen" style="text-align: center; padding: 12px 0 8px;">
+      <p style="font-size: 14px; color: var(--ink-muted); line-height: 1.7; margin-bottom: 24px;">
+        Visualize sua moeda ou brevê com o Visualizador da Tocoin. Descreva sua ideia e nossa inteligência artificial gera uma imagem realista do seu projeto em segundos.
+      </p>
+      <button class="btn" onclick="mostrarFormulario()">
+        Começar
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </button>
     </div>
-    <div class="field">
-      <label style="font-size: 12px">WhatsApp <span class="hint">com DDD</span></label>
-      <input type="tel" id="telefone" placeholder="(00) 00000-0000" autocomplete="tel">
+
+    <!-- Form -->
+    <div id="form-screen" style="display: none;">
+      <div class="card-eyebrow">
+        <span style="font-family: Montserrat; font-size: 12px">Passo 01</span>
+        <span class="meta" style="font-family: Montserrat; font-size: 12px">de 04</span>
+      </div>
+      <h2 class="card-title">Seus dados para liberar o visualizador</h2>
+      <div class="field">
+        <label>Nome completo</label>
+        <input type="text" id="nome" placeholder="Seu nome" autocomplete="name" required>
+      </div>
+      <div class="field">
+        <label>WhatsApp <span class="hint">com DDD</span></label>
+        <input type="tel" id="telefone" placeholder="(00) 00000-0000" autocomplete="tel" required>
+      </div>
+      <div class="field">
+        <label>E-mail</label>
+        <input type="email" id="email" placeholder="seu@email.com" autocomplete="email" required>
+      </div>
+      <div class="error-msg" id="error-1"></div>
+      <button class="btn" onclick="irStep2()">
+        Continuar
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </button>
     </div>
-    <div class="field">
-      <label style="font-size: 12px">E-mail</label>
-      <input type="email" id="email" placeholder="seu@email.com" autocomplete="email">
-    </div>
-    <div class="error-msg" id="error-1"></div>
-    <button class="btn" onclick="irStep2()">
-      Continuar
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-    </button>
   </div>
 
-  <!-- STEP 2 -->
+    <!-- STEP 2 -->
   <div class="card" id="step-2">
     <div class="card-eyebrow">
       <span style="font-family: Montserrat; font-size: 12px">Passo 02</span>
@@ -762,13 +906,14 @@
 
     <div class="field">
       <label>Banho</label>
-      <div class="tags" id="material-tags">
-        <div class="tag selected" onclick="selectTag(this,'material')">Bronze Envelhecido</div>
-        <div class="tag" onclick="selectTag(this,'material')">Prata Envelhecido</div>
-        <div class="tag" onclick="selectTag(this,'material')">Ouro Brilho</div>
-        <div class="tag" onclick="selectTag(this,'material')">Ouro Envelhecido</div>
-        <div class="tag" onclick="selectTag(this,'material')">Níquel Brilho</div>
-      </div>
+      <select id="material-select" onchange="materialSelecionado = this.value">
+        <option value="">Escolha o banho</option>
+        <option value="Bronze Envelhecido">Bronze Envelhecido</option>
+        <option value="Prata Envelhecido">Prata Envelhecido</option>
+        <option value="Ouro Brilho">Ouro Brilho</option>
+        <option value="Cobre Envelhecido">Cobre Envelhecido</option>
+        <option value="Níquel Brilho">Níquel Brilho</option>
+      </select>
     </div>
 
     <div class="field">
@@ -851,10 +996,7 @@
       <div class="section-divider"></div>
       <div class="cta-box">
         <p>Gostou do resultado? Fale com nossa equipe e receba um orçamento personalizado.</p>
-        <button class="btn btn-whatsapp" onclick="irStep4()">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-          Quero meu orçamento
-        </button>
+        <button class="btn" onclick="irStep4()">Quero um orçamento</button>
         <button class="btn btn-outline" onclick="voltarStep2()">← Alterar configuração</button>
       </div>
     </div>
@@ -870,35 +1012,45 @@
     <h2 class="card-title">Detalhes do seu orçamento</h2>
 
     <div class="field">
-      <label style="font-size: 12px">Quantidade</label>
-      <input type="number" id="quantidade" placeholder="Ex: 100" min="1">
+      <label>Qual a quantidade que deseja?</label>
+      <select id="quantidade" onchange="quantidadeSelecionado = this.value">
+        <option value="">Escolha a quantidade</option>
+        <option value="De 50 a 100 unidades">De 50 a 100 unidades</option>
+        <option value="De 101 a 300 unidades">De 101 a 300 unidades</option>
+        <option value="Acima de 300 unidades">Acima de 300 unidades</option>
+      </select>
     </div>
 
     <div class="field">
-      <label style="font-size: 12px">Para quando precisa?</label>
-      <input type="text" id="prazo" placeholder="Ex: 30 dias, agosto/2026...">
+      <label>Para quando precisa?</label>
+      <select id="prazo" onchange="prazoSelecionado = this.value">
+        <option value="">Escolha o prazo</option>
+        <option value="Em 60 a 75 dias">Em 60 a 75 dias</option>
+        <option value="Em 75 a 90 dias">Em 75 a 90 dias</option>
+        <option value="Acima de 90 dias">Acima de 90 dias</option>
+      </select>
     </div>
 
     <div class="field">
-      <label style="font-size: 12px">Segmento</label>
-      <div class="tags" id="segmento-tags" style="gap: 7px">
-        <div class="tag" onclick="selectTag(this,'segmento')">Polícia Militar</div>
-        <div class="tag" onclick="selectTag(this,'segmento')">Empresa Privada</div>
-        <div class="tag" onclick="selectTag(this,'segmento')">Forças Armadas</div>
-        <div class="tag" onclick="selectTag(this,'segmento')">Bombeiro</div>
-        <div class="tag" onclick="selectTag(this,'segmento')">Polícia Civil</div>
-        <div class="tag" onclick="selectTag(this,'segmento')">Polícia Federal</div>
-        <div class="tag" onclick="selectTag(this,'segmento')">Polícia Rodoviária Federal</div>
-        <div class="tag" onclick="selectTag(this,'segmento')">Polícia Penal</div>
-        <div class="tag" onclick="selectTag(this,'segmento')">Governo</div>
-        <div class="tag" onclick="selectTag(this,'segmento')">Particular</div>
-        <div class="tag" onclick="selectTag(this,'segmento')">Instituição</div>
-      </div>
+      <label>Qual segmento seu projeto representa?</label>
+      <select id="segmento-select" onchange="segmentoSelecionado = this.value">
+        <option value="">Escolha o segmento</option>
+        <option value="Polícia Militar">Polícia Militar</option>
+        <option value="Empresa Privada">Empresa Privada</option>
+        <option value="Forças Armadas">Forças Armadas</option>
+        <option value="Bombeiro">Bombeiro</option>
+        <option value="Polícia Civil">Polícia Civil</option>
+        <option value="Polícia Federal">Polícia Federal</option>
+        <option value="Polícia Rodoviária Federal">Polícia Rodoviária Federal</option>
+        <option value="Polícia Penal">Polícia Penal</option>
+        <option value="Governo">Governo</option>
+        <option value="Instituição">Instituição</option>
+      </select>
     </div>
 
     <div class="field">
-      <label style="font-size: 12px">Nome da instituição / empresa</label>
-      <input type="text" id="instituicao" placeholder="Ex: Polícia Militar de Santa Catarina">
+      <label>Qual o nome da Instituição/Empresa?</label>
+      <input type="text" id="instituicao" placeholder="Ex: Polícia Militar de Santa Catarina" required>
     </div>
 
     <div class="error-msg" id="error-4"></div>
@@ -908,6 +1060,33 @@
     </button>
     <button class="btn btn-outline" onclick="setStep(3)" style="margin-top: 10px">← Voltar</button>
   </div>
+
+  <!-- STEP 5 - Obrigado -->
+  <div class="card" id="step-5">
+    <div class="card-eyebrow">
+      <span style="font-family: Montserrat; font-size: 12px">Concluído</span>
+    </div>
+    <div style="text-align: center; padding: 20px 0;">
+      <div style="width: 64px; height: 64px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1c1c1d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      </div>
+      <h2 class="card-title" style="text-align: center;">Obrigado, <span id="nome-obrigado" style="color: var(--gold)"></span>!</h2>
+      <p style="font-size: 14px; color: var(--ink-muted); line-height: 1.7; margin-top: 12px;">
+        Obrigado por utilizar nossa inteligência artificial para criar a visualização do seu projeto. Em breve um consultor fará contato.
+      </p>
+    </div>
+  </div>
+
+    </div><!-- end desktop-left -->
+
+    <div class="desktop-right" id="desktop-right-col">
+
+      <div id="desktop-result" style="display:none;">
+        <img id="desktop-result-img" class="desktop-result-img">
+        <p class="desktop-result-title">© Tocoin · Visualização gerada por IA</p>
+      </div>
+    </div><!-- end desktop-right -->
+  </div><!-- end desktop-layout -->
 
   <footer style="font-family: Montserrat; font-size: 12px">
     © 2026 Tocoin Moedas e Medalhas
@@ -928,8 +1107,10 @@
   let tipoSelecionado = 'Moeda Personalizada';
   let coresSelecionado = 'Sem cor';
   let segmentoSelecionado = '';
+  let prazoSelecionado = '';
+  let quantidadeSelecionado = '';
   let leadId = null;
-  let materialSelecionado = 'Bronze Envelhecido';
+  let materialSelecionado = '';
   let uploadBase64 = null;
   let timerInterval = null;
   let resultImageSrc = null;
@@ -973,6 +1154,8 @@
     if (group === 'material') materialSelecionado = el.textContent.trim();
     if (group === 'cores') coresSelecionado = el.textContent.trim();
     if (group === 'segmento') segmentoSelecionado = el.textContent.trim();
+    if (group === 'prazo') { prazoSelecionado = el.textContent.trim(); document.getElementById('prazo').value = prazoSelecionado; }
+    if (group === 'quantidade') { quantidadeSelecionado = el.textContent.trim(); document.getElementById('quantidade').value = quantidadeSelecionado; }
   }
 
   function handleUpload(input) {
@@ -991,7 +1174,7 @@
   }
 
   function setStep(n) {
-    [1, 2, 3, 4].forEach(i => {
+    [1, 2, 3, 4, 5].forEach(i => {
       const card = document.getElementById('step-' + i);
       if (card) card.classList.toggle('active', i === n);
       const ind = document.getElementById('step-ind-' + i);
@@ -1018,9 +1201,17 @@
       sub.textContent = 'Conte os detalhes, quanto mais específico, mais fiel será sua visualização.';
     } else if (n === 3) {
       h1.innerHTML = primeiroNome
-        ? `<span style="color:${gold}">${primeiroNome}</span>,<br>aqui está sua peça`
-        : `Sua peça,<br><span style="color:${gold}">pronta</span>`;
-      sub.textContent = 'Imagem ilustrativa gerada por IA. Você pode refazer quantas vezes quiser.';
+        ? `<span style="color:${gold}">${primeiroNome}</span>,<br>aqui está seu projeto`
+        : `Seu projeto,<br><span style="color:${gold}">pronto</span>`;
+      sub.textContent = 'Imagem ilustrativa gerada pelo visualizador da Tocoin.';
+    } else if (n === 4) {
+      h1.innerHTML = primeiroNome
+        ? `<span style="color:${gold}">${primeiroNome}</span>,<br>fale mais sobre o seu projeto`
+        : `Fale mais sobre<br><span style="color:${gold}">o seu projeto</span>`;
+      sub.textContent = 'Compartilhe mais informações sobre o seu projeto.';
+    } else if (n === 5) {
+      h1.innerHTML = `Missão <span style="color:${gold}">cumprida!</span>`;
+      sub.textContent = '';
     }
   }
   window.atualizarHero = atualizarHero;
@@ -1079,8 +1270,8 @@
     hideError('error-2');
     const lado1 = document.getElementById('lado1').value.trim();
     const lado2 = document.getElementById('lado2').value.trim();
-    if (!lado1 && !lado2 && !uploadBase64)
-      return showError('error-2', 'Por favor, descreva ao menos uma face ou envie uma imagem de referência.');
+    if (!lado1 && !uploadBase64)
+      return showError('error-2', 'Por favor, descreva a frente da peça ou envie uma imagem de referência.');
     setStep(3);
     document.getElementById('result-content').style.display = 'none';
     document.getElementById('status-gerando').classList.add('active');
@@ -1111,16 +1302,42 @@
           promptLado2: document.getElementById('lado2').value.trim() || 'back face of the coin',
           tipo: tipoSelecionado,
           material: materialSelecionado,
-          imageBase64: uploadBase64 || null
+          cores: coresSelecionado,
+          imageBase64: uploadBase64 || null,
+          leadId: leadId || null,
+          email: document.getElementById('email').value.trim()
         })
       });
       clearInterval(timerInterval);
       const data = await res.json();
-      if (!data.success) throw new Error(data.error || 'Erro desconhecido');
+      if (!data.success) {
+        if (data.limitExceeded) {
+          clearInterval(timerInterval);
+          document.getElementById('status-gerando').classList.remove('active');
+          showError('error-3', '⚠️ Você atingiu o limite de 3 visualizações gratuitas. Entre em contato com a Tocoin para solicitar seu orçamento.');
+          // Show WhatsApp button directly
+          document.getElementById('result-content').style.display = 'block';
+          document.getElementById('result-img').style.display = 'none';
+          return;
+        }
+        throw new Error(data.error || 'Erro desconhecido');
+      }
 
       const finalSrc = await aplicarMarcaDagua(`data:${data.mimeType};base64,${data.data}`);
       resultImageSrc = finalSrc;
       document.getElementById('result-img').src = finalSrc;
+      // Switch to two-column layout on desktop
+      const layout = document.querySelector('.desktop-layout');
+      if (layout) layout.classList.add('has-image');
+
+      // Also update desktop preview
+      const desktopImg = document.getElementById('desktop-result-img');
+      const desktopResult = document.getElementById('desktop-result');
+      const desktopPlaceholder = document.getElementById('desktop-placeholder');
+      if (desktopImg) {
+        desktopImg.src = finalSrc;
+        if (desktopResult) desktopResult.style.display = 'block';
+      }
       document.getElementById('status-gerando').classList.remove('active');
       document.getElementById('result-content').style.display = 'block';
     } catch (e) {
@@ -1252,17 +1469,23 @@
     setStep(2);
   }
 
+  function mostrarFormulario() {
+    document.getElementById('intro-screen').style.display = 'none';
+    document.getElementById('form-screen').style.display = 'block';
+  }
+
   function irStep4() {
     setStep(4);
   }
 
   async function enviarOrcamento() {
     hideError('error-4');
-    const quantidade = document.getElementById('quantidade').value.trim();
-    const prazo = document.getElementById('prazo').value.trim();
+    const quantidade = document.getElementById('quantidade').value;
+    const prazo = document.getElementById('prazo').value;
     const instituicao = document.getElementById('instituicao').value.trim();
     if (!quantidade) return showError('error-4', 'Por favor, informe a quantidade.');
-    if (!prazo) return showError('error-4', 'Por favor, informe o prazo.');
+    if (!prazo) return showError('error-4', 'Por favor, selecione o prazo.');
+    if (!segmentoSelecionado) return showError('error-4', 'Por favor, selecione o segmento.');
     if (!segmentoSelecionado) return showError('error-4', 'Por favor, selecione o segmento.');
     if (!instituicao) return showError('error-4', 'Por favor, informe o nome da instituição ou empresa.');
 
@@ -1306,6 +1529,8 @@
       `*Instituição:* ${instituicao}`
     );
     window.open(`https://wa.me/${WHATSAPP}?text=${msg}`, '_blank');
+    document.getElementById('nome-obrigado').textContent = document.getElementById('nome').value.trim().split(' ')[0];
+    setStep(5);
   }
 
   function abrirWhatsApp() {
@@ -1314,6 +1539,8 @@
       `Olá! Me chamo ${nome} e acabei de visualizar minha ${tipoSelecionado} (${materialSelecionado}) no site da Tocoin. Gostaria de receber um orçamento!`
     );
     window.open(`https://wa.me/${WHATSAPP}?text=${msg}`, '_blank');
+    document.getElementById('nome-obrigado').textContent = document.getElementById('nome').value.trim().split(' ')[0];
+    setStep(5);
   }
 </script>
 

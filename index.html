@@ -647,8 +647,12 @@
   footer a:hover { color: var(--gold); }
 
   canvas#watermark-canvas { display: none; }
+  /* Hide desktop right col on mobile */
+  #desktop-right-col { display: none; }
+
   /* ── Desktop layout ───────────────────────────────────── */
   @media (min-width: 768px) {
+    #desktop-right-col { display: block; }
     .container {
       padding: 0 40px;
     }
@@ -803,7 +807,7 @@
     .container { padding: 0 14px; }
     header { padding: 22px 0 6px; }
     .logo-img { height: 48px; }
-    .stepper { margin: 22px 0 14px; }
+    .stepper { margin: 8px 0 30px; }
     .step-lbl { font-size: 9.5px; letter-spacing: 0.1em; }
   }
   @media (max-width: 360px) {
@@ -1091,7 +1095,7 @@
 
     </div><!-- end desktop-left -->
 
-    <div class="desktop-right" id="desktop-right-col">
+    <div class="desktop-right" id="desktop-right-col" style="display:none;">
 
       <div id="desktop-result" style="display:none;">
         <img id="desktop-result-img" class="desktop-result-img">

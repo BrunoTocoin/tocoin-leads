@@ -408,6 +408,34 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  if (req.method === 'POST' && req.url === '/api/lead-patch') {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', async () => {
+      try {
+        const { id, material, cores, tipo, descricao } = JSON.parse(body);
+        if (!id) { res.writeHead(400); res.end('{}'); return; }
+        const supRes = await fetch(`${SUPABASE_URL}/rest/v1/leads?id=eq.${id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify({ material, cores, tipo, descricao })
+        });
+        console.log('[LEAD-PATCH] Status:', supRes.status);
+        res.writeHead(supRes.ok ? 200 : 500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: supRes.ok }));
+      } catch(e) {
+        console.error('[LEAD-PATCH] Erro:', e.message);
+        res.writeHead(500); res.end('{}');
+      }
+    });
+    return;
+  }
+
   if (req.method === 'POST' && req.url === '/api/lead-update') {
     let body = '';
     req.on('data', chunk => body += chunk);

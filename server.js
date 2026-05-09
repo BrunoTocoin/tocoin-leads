@@ -33,26 +33,44 @@ const server = http.createServer(async (req, res) => {
     req.on('data', chunk => body += chunk);
     req.on('end', async () => {
       try {
-        const { promptLado1, promptLado2, tipo, material, imageBase64 } = JSON.parse(body);
+        const { promptLado1, promptLado2, tipo, material, cores, imageBase64 } = JSON.parse(body);
 
-        const matMap = {
-          'Dourado': 'polished gold with warm reflections',
-          'Prateado': 'polished silver with cool reflections',
-          'Bronze Envelhecido': 'antique bronze with subtle patina in the recesses',
-          'Níquel Preto': 'black nickel with dark metallic sheen',
-          'Dourado com Esmalte': 'gold with vibrant colored enamel fills'
-        };
+        // Product type mapping
         const tipoMap = {
-          'Challenge Coin': 'challenge coin',
-          'Brevê Militar': 'military brevet pin',
-          'Medalha': 'medal',
-          'Moeda Comemorativa': 'commemorative coin'
+          'Moeda Personalizada': 'challenge coin',
+          'Brevê Militar': 'military brevet pin badge'
         };
-
-        const mat = matMap[material] || 'polished gold';
         const tip = tipoMap[tipo] || 'challenge coin';
+        const isBrève = tipo === 'Brevê Militar';
+        const hasColor = cores === 'Colorida';
 
-        const prompt = `A highly detailed photorealistic macro photograph of two ${tip}s side by side. LEFT coin front face: ${promptLado1 || 'decorative front face'}. RIGHT coin back face: ${promptLado2 || 'decorative back face'}. Both made of ${mat}. Dark charcoal background. Frontal view, dramatic side lighting from left, high relief 3D sculpting, 8k professional product photography.`;
+        // Finish description per plating
+        const finishMap = {
+          'Bronze Envelhecido': `antique bronze plating: warm golden-dark tone with deep grey-black patina filling all recesses and engravings, strong two-tone contrast between bright raised areas and near-black recessed areas, matte-satin surface with fine granular texture on flat zones`,
+          'Prata Envelhecido': `antique silver plating: cold grey-silver tone with near-black patina deep in all recesses, matte-frosted surface on flat areas, sharp contrast between bright silver high points and darkened shadowed recesses, cold metallic temperature`,
+          'Ouro Brilho': `polished gold plating: intense saturated warm yellow-gold, highly reflective mirror-polished surface with no patina or darkening in recesses, specular highlights on edges and raised elements, slight brushed matte texture on flat background contrasting with polished relief`,
+          'Ouro Envelhecido': `antique gold plating: warm golden tone with subtle brown-black patina in recesses, matte-satin surface, premium aged appearance with warm temperature`,
+          'Níquel Brilho': `polished nickel plating: bright cold white-silver tone, highly reflective mirror-polished surface with no patina, very clean and modern appearance, extremely bright specular highlights, cold temperature`,
+          'Cobre Envelhecido': `antique copper plating: warm reddish-pink copper tone with dramatic near-black patina in all recesses, strong contrast between bright copper-rose raised areas and very dark recesses, matte surface with visible fine texture`
+        };
+        const finish = finishMap[material] || finishMap['Bronze Envelhecido'];
+
+        // Enamel description
+        const enamelDesc = hasColor
+          ? `vibrant hard enamel fills in the recessed areas with flat saturated colors (red, blue, green, black, yellow as appropriate), colors are opaque and glossy contrasting with the metal finish`
+          : `no enamel or color fills — pure metallic surface throughout, all depth created by relief and patina contrast only`;
+
+        // Shape description
+        const shapeDesc = isBrève
+          ? `custom shield or badge shape (not circular), with possible extended elements like wings or decorative protrusions beyond the main body outline, thin profile designed to be pinned to a uniform`
+          : `perfectly circular coin shape with defined edge rim, thick profile, designed to be held in hand`;
+
+        // Composition
+        const compositionDesc = isBrève
+          ? `single ${tip} shown frontally centered in frame`
+          : `two ${tip}s shown side by side horizontally centered: LEFT coin (front face): ${promptLado1 || 'decorative front face with central emblem and text around the border'}. RIGHT coin (back face): ${promptLado2 || 'decorative back face with complementary design'}`;
+
+        const prompt = `Photorealistic macro product photography of a Brazilian custom ${tip} manufactured by Tocoin. ${compositionDesc}. PLATING: ${finish}. ENAMEL: ${enamelDesc}. SHAPE: ${shapeDesc}. DESIGN ELEMENTS: ${promptLado1}${isBrève ? '' : ` | verso: ${promptLado2}`}. PHOTOGRAPHY STYLE: perfectly flat frontal view with no perspective tilt, dramatic side lighting from the left creating depth on the relief, dark charcoal background (#3d3d3c), ultra-sharp macro focus, 8k resolution, professional numismatic product photography quality, metallic reflections faithful to the plating type.`;
 
         const modelos = [
           'gemini-3.1-flash-image-preview',
@@ -63,7 +81,7 @@ const server = http.createServer(async (req, res) => {
         const parts = [];
         if (imageBase64) {
           parts.push({ inlineData: { mimeType: 'image/jpeg', data: imageBase64 } });
-          parts.push({ text: `Use this image as style reference. ${prompt}` });
+          parts.push({ text: `Use this image as style and composition reference. Generate a similar ${tip} with these specifications: ${prompt}` });
         } else {
           parts.push({ text: prompt });
         }
@@ -147,7 +165,6 @@ const server = http.createServer(async (req, res) => {
       try {
         const { id, email, quantidade, prazo, segmento, instituicao } = JSON.parse(body);
         console.log('[LEAD-UPDATE] id:', id, 'email:', email);
-        // Update by id if available, fallback to email
         const filter = id ? `id=eq.${id}` : `email=eq.${encodeURIComponent(email)}`;
         const supRes = await fetch(`${SUPABASE_URL}/rest/v1/leads?${filter}`, {
           method: 'PATCH',

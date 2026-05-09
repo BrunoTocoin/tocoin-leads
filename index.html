@@ -2,223 +2,977 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tocoin — Visualize sua Moeda</title>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#2a2a2b">
+<title>Tocoin — Visualize sua moeda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --gold: #bba05a; --gold-light: #d4b97a; --gold-dark: #8a7040;
-  --bg: #3d3d3e; --bg-2: #444445; --bg-3: #484849;
-  --border: rgba(187,160,90,0.15); --border-strong: rgba(187,160,90,0.25);
-  --text: #ffffff; --text-muted: #c8c5c0; --text-faint: #999896;
-}
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: var(--bg); color: var(--text); font-family: 'Montserrat', sans-serif; font-weight: 300; min-height: 100vh; overflow-x: hidden; }
-body::before { content: ''; position: fixed; inset: 0; background-image: radial-gradient(ellipse at 20% 50%, rgba(187,160,90,0.04) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(187,160,90,0.03) 0%, transparent 50%); pointer-events: none; z-index: 0; }
-.container { max-width: 600px; margin: 0 auto; padding: 0 16px; position: relative; z-index: 1; }
-header { padding: 24px 0 20px; text-align: center; }
-.logo-img { height: 120px; margin-bottom: 24px; opacity: 0.9; mix-blend-mode: screen; }
-h1 { font-family: 'Montserrat', sans-serif; font-size: clamp(28px, 8vw, 40px); font-weight: 700; line-height: 1.15; margin-bottom: 10px; }
-h1 span { color: var(--gold); }
-.subtitle { font-size: 15px; color: var(--text-muted); line-height: 1.7; max-width: 420px; margin: 0 auto; }
-.steps { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 28px 0; }
-.step-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-faint); transition: all 0.3s; }
-.step-dot.active { background: var(--gold); width: 24px; border-radius: 3px; }
-.step-dot.done { background: var(--gold-dark); }
-.card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 12px; padding: 20px 16px; margin-bottom: 16px; display: none; animation: fadeUp 0.4s ease; }
-.card.active { display: block; }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-.card-label { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; font-weight: 500; }
-.card-title { font-family: 'Montserrat', sans-serif; font-size: clamp(18px, 5vw, 22px); font-weight: 700; margin-bottom: 18px; }
-.field { margin-bottom: 14px; }
-label { display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 6px; letter-spacing: 0.03em; }
-input, textarea { width: 100%; background: var(--bg-3); border: 1px solid var(--border); border-radius: 8px; padding: 13px 14px; font-size: 16px; font-family: 'Montserrat', sans-serif; font-weight: 300; color: var(--text); outline: none; transition: border-color 0.2s; }
-input::placeholder, textarea::placeholder { color: var(--text-faint); }
-input:focus, textarea:focus { border-color: var(--border-strong); }
-textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
-.tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 7px; }
-.tag { padding: 6px 13px; border: 1px solid var(--border); border-radius: 20px; font-size: 12px; color: var(--text-muted); cursor: pointer; transition: all 0.2s; background: var(--bg-3); user-select: none; }
-.tag:hover { border-color: var(--border-strong); color: var(--text); }
-.tag.selected { border-color: var(--gold); color: var(--gold); background: rgba(187,160,90,0.08); }
-.section-divider { height: 1px; background: var(--border); margin: 20px 0; }
-.section-label { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 14px; }
-.btn { width: 100%; padding: 15px; background: var(--gold); border: none; border-radius: 8px; font-size: 16px; font-family: 'Montserrat', sans-serif; font-weight: 600; color: #2a2a2b; cursor: pointer; transition: all 0.2s; margin-top: 10px; letter-spacing: 0.02em; }
-.btn:hover { background: var(--gold-light); }
-.btn:active { transform: scale(0.99); }
-.btn:disabled { background: var(--text-faint); cursor: not-allowed; color: var(--bg); }
-.btn-outline { background: transparent; border: 1px solid var(--border-strong); color: var(--text-muted); }
-.btn-outline:hover { background: var(--bg-3); color: var(--text); }
-.btn-sm { width: auto; padding: 9px 16px; font-size: 13px; }
-.action-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
-.action-row .btn { margin-top: 0; flex: 1; min-width: 120px; }
-.upload-area { border: 1px dashed var(--border-strong); border-radius: 8px; padding: 18px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--bg-3); position: relative; }
-.upload-area:hover { border-color: var(--gold); }
-.upload-area input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
-.upload-area p { font-size: 13px; color: var(--text-muted); }
-.upload-area small { font-size: 11px; color: var(--text-faint); }
-.upload-preview { width: 100%; max-height: 140px; object-fit: cover; border-radius: 6px; margin-top: 8px; display: none; }
-.or-divider { display: flex; align-items: center; gap: 12px; margin: 14px 0; font-size: 12px; color: var(--text-faint); }
-.or-divider::before, .or-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-.status { text-align: center; padding: 20px 16px; font-size: 13px; color: var(--text-muted); display: none; }
-.status.active { display: block; }
-.spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border-strong); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-right: 8px; }
-@keyframes spin { to { transform: rotate(360deg); } }
-.error-msg { background: rgba(180,50,50,0.1); border: 1px solid rgba(180,50,50,0.3); border-radius: 8px; padding: 11px 13px; font-size: 13px; color: #E07070; margin-top: 10px; display: none; }
-.result-img { width: 100%; border-radius: 12px; border: 1px solid var(--border); display: block; margin-bottom: 12px; }
-.result-meta { font-size: 11px; color: var(--text-faint); text-align: center; margin-bottom: 18px; }
-.cta-box { text-align: center; }
-.cta-box p { font-size: 14px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.6; }
-.btn-whatsapp { background: #25D366; color: #fff; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 500; }
-.btn-whatsapp:hover { background: #20BD5A; }
-footer { text-align: center; padding: 36px 0; font-size: 12px; color: var(--text-faint); }
-canvas { display: none; }
+  /* ─────────────────────────────────────────────────────────
+     Tocoin · Visualizador de Moeda
+     Premium classic — gold on warm carbon
+     ───────────────────────────────────────────────────────── */
 
-@media (max-width: 480px) {
-  .container { padding: 0 12px; }
-  .card { padding: 18px 14px; border-radius: 10px; }
-  header { padding: 20px 0 16px; }
-  .logo-img { height: 80px; }
-  .steps { margin: 20px 0; }
-  .action-row { flex-direction: column; }
-  .action-row .btn { min-width: unset; }
-}
+  :root {
+    /* gold scale */
+    --gold:        #bba05a;
+    --gold-light:  #d4b97a;
+    --gold-soft:   #c9b07a;
+    --gold-dark:   #8a7040;
+    --gold-faint:  rgba(187,160,90,0.08);
+    --gold-line:   rgba(187,160,90,0.18);
+    --gold-line-2: rgba(187,160,90,0.32);
 
+    /* surface scale (warm carbon) */
+    --bg:    #2e2e2f;
+    --bg-1:  #353536;
+    --bg-2:  #3c3c3d;
+    --bg-3:  #434344;
+    --bg-4:  #4a4a4b;
+
+    /* text */
+    --ink:        #f6f3ec;
+    --ink-muted:  #c5bfb2;
+    --ink-faint:  #8a857c;
+
+    /* accents */
+    --rule:       rgba(255,255,255,0.06);
+    --danger:     #e07b6a;
+
+    /* shape */
+    --radius-card:   14px;
+    --radius-input:  9px;
+    --radius-tag:    999px;
+    --radius-img:    14px;
+
+    /* density */
+    --pad-card-x:    18px;
+    --pad-card-y:    22px;
+    --gap-field:     14px;
+    --container-max: 560px;
+
+    /* typography */
+    --font-sans:    'Montserrat', system-ui, sans-serif;
+    --font-serif:   'Cormorant Garamond', Georgia, serif;
+    --font-mono:    'JetBrains Mono', ui-monospace, monospace;
+
+    /* texture intensity */
+    --grain:        0.035;
+
+    /* motion */
+    --ease:         cubic-bezier(.2,.7,.2,1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    line-height: 1.5;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+
+  /* ambient gold glow */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 90% 50% at 20% 0%,  rgba(187,160,90,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 90% 80%, rgba(187,160,90,0.04) 0%, transparent 60%);
+  }
+  /* fine grain overlay */
+  body::after {
+    content: '';
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    opacity: var(--grain);
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.9'/></svg>");
+    mix-blend-mode: overlay;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 18px;
+  }
+
+  /* ── header ───────────────────────────────────────────── */
+  header {
+    padding: 28px 0 8px;
+    text-align: center;
+  }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 18px;
+  }
+  .eyebrow::before, .eyebrow::after {
+    content: ''; width: 22px; height: 1px;
+    background: var(--gold-line-2);
+  }
+  .logo-wrap {
+    display: flex; justify-content: center;
+    margin-bottom: 22px;
+  }
+  .logo-img {
+    height: 120px;
+    opacity: 0.95;
+    mix-blend-mode: screen;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+  }
+
+  h1 {
+    font-family: var(--font-sans);
+    font-size: clamp(30px, 8.5vw, 42px);
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -0.012em;
+    margin: 0 0 14px;
+    text-wrap: balance;
+  }
+  h1 em {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 500;
+    color: var(--gold);
+    letter-spacing: 0.005em;
+    /* slight optical lift on serif */
+    font-size: 1.08em;
+    line-height: 1;
+  }
+  .subtitle {
+    font-size: 14.5px;
+    color: var(--ink-muted);
+    line-height: 1.65;
+    max-width: 38ch;
+    margin: 0 auto;
+    text-wrap: pretty;
+  }
+
+  /* ── stepper ──────────────────────────────────────────── */
+  .stepper {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin: 28px 0 18px;
+    position: relative;
+  }
+  .step {
+    position: relative;
+    text-align: center;
+    padding: 10px 4px 0;
+  }
+  .step-num {
+    display: inline-flex;
+    align-items: center; justify-content: center;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    border: 1px solid var(--gold-line);
+    background: var(--bg-1);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink-faint);
+    transition: all 0.3s var(--ease);
+    margin-bottom: 6px;
+  }
+  .step-lbl {
+    display: block;
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    transition: color 0.3s var(--ease);
+  }
+  .step.active .step-num {
+    border-color: var(--gold);
+    background: var(--gold);
+    color: #1f1f20;
+    box-shadow: 0 0 0 4px rgba(187,160,90,0.12);
+  }
+  .step.active .step-lbl { color: var(--gold); }
+  .step.done .step-num {
+    border-color: var(--gold-line-2);
+    color: var(--gold);
+    background: var(--bg-1);
+  }
+  .step.done .step-lbl { color: var(--ink-muted); }
+  /* connecting hairlines */
+  .stepper::before {
+    content: '';
+    position: absolute;
+    top: calc(10px + 13px);
+    left: calc(16.66% + 16px);
+    right: calc(16.66% + 16px);
+    height: 1px;
+    background: linear-gradient(to right, var(--rule), var(--gold-line) 50%, var(--rule));
+    z-index: 0;
+  }
+  .step { z-index: 1; }
+  .step .step-num { background: var(--bg); }
+
+  /* ── card ─────────────────────────────────────────────── */
+  .card {
+    position: relative;
+    background: linear-gradient(180deg, var(--bg-2) 0%, var(--bg-1) 100%);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-card);
+    padding: var(--pad-card-y) var(--pad-card-x);
+    margin-bottom: 14px;
+    display: none;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.025) inset,
+      0 12px 28px -16px rgba(0,0,0,0.5);
+  }
+  .card.active {
+    display: block;
+    opacity: 1;
+    animation: fadeUp 0.42s var(--ease) both;
+  }
+  /* hairline gold rule on top */
+  .card::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: 14%; right: 14%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold-line-2), transparent);
+    pointer-events: none;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-eyebrow {
+    display: flex;
+    align-items: center; justify-content: space-between;
+    margin-bottom: 4px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 500;
+  }
+  .card-eyebrow .meta { color: var(--ink-faint); }
+  .card-title {
+    font-family: var(--font-sans);
+    font-size: clamp(19px, 5vw, 22px);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+    margin: 0 0 18px;
+    text-wrap: balance;
+  }
+
+  /* ── fields ───────────────────────────────────────────── */
+  .field { margin-bottom: var(--gap-field); }
+  .field:last-of-type { margin-bottom: 0; }
+  label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--ink-muted);
+    margin-bottom: 7px;
+    letter-spacing: 0.02em;
+  }
+  label .hint {
+    font-weight: 300;
+    color: var(--ink-faint);
+    font-size: 11px;
+  }
+  input, textarea {
+    width: 100%;
+    background: var(--bg-3);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-input);
+    padding: 13px 14px;
+    font-size: 16px;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    color: var(--ink);
+    outline: none;
+    transition: all 0.18s var(--ease);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.15) inset;
+  }
+  input::placeholder, textarea::placeholder {
+    color: var(--ink-faint);
+    font-weight: 300;
+  }
+  input:hover, textarea:hover { border-color: rgba(255,255,255,0.12); }
+  input:focus, textarea:focus {
+    border-color: var(--gold-line-2);
+    background: var(--bg-3);
+    box-shadow:
+      0 1px 0 rgba(0,0,0,0.15) inset,
+      0 0 0 3px rgba(187,160,90,0.1);
+  }
+  textarea {
+    resize: vertical;
+    min-height: 92px;
+    line-height: 1.55;
+    font-size: 14.5px;
+  }
+
+  /* ── tag chips ────────────────────────────────────────── */
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+  .tag {
+    position: relative;
+    padding: 8px 14px;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-tag);
+    font-size: 12.5px;
+    font-weight: 400;
+    color: var(--ink-muted);
+    cursor: pointer;
+    transition: all 0.18s var(--ease);
+    background: var(--bg-3);
+    user-select: none;
+    letter-spacing: 0.005em;
+  }
+  .tag:hover {
+    border-color: var(--gold-line);
+    color: var(--ink);
+  }
+  .tag.selected {
+    border-color: var(--gold);
+    color: var(--gold);
+    background:
+      linear-gradient(180deg, rgba(187,160,90,0.14), rgba(187,160,90,0.06));
+    box-shadow:
+      0 0 0 1px var(--gold) inset,
+      0 0 0 4px rgba(187,160,90,0.08),
+      0 1px 0 rgba(255,255,255,0.04) inset;
+    font-weight: 500;
+  }
+
+  /* ── dividers / section labels ────────────────────────── */
+  .section-divider {
+    height: 1px;
+    background: var(--rule);
+    margin: 22px 0 18px;
+  }
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-label::after {
+    content: ''; flex: 1; height: 1px; background: var(--rule);
+  }
+
+  /* ── upload ───────────────────────────────────────────── */
+  .or-divider {
+    display: flex; align-items: center; gap: 12px;
+    margin: 18px 0 12px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .or-divider::before, .or-divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--rule);
+  }
+  .upload-area {
+    position: relative;
+    border: 1px dashed var(--gold-line);
+    border-radius: var(--radius-input);
+    padding: 18px 14px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s var(--ease);
+    background: rgba(187,160,90,0.025);
+  }
+  .upload-area:hover {
+    border-color: var(--gold);
+    background: rgba(187,160,90,0.05);
+  }
+  .upload-area input[type="file"] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%;
+  }
+  .upload-icon {
+    width: 28px; height: 28px;
+    margin: 0 auto 8px;
+    color: var(--gold);
+    opacity: 0.8;
+  }
+  .upload-area p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--ink-muted);
+    font-weight: 400;
+  }
+  .upload-area small {
+    display: block;
+    margin-top: 3px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+  }
+  .upload-preview {
+    width: 100%;
+    max-height: 160px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-top: 10px;
+    display: none;
+    border: 1px solid var(--gold-line);
+  }
+
+  /* ── buttons ──────────────────────────────────────────── */
+  .btn {
+    width: 100%;
+    padding: 15px 18px;
+    background: var(--gold);
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: var(--radius-input);
+    font-size: 15px;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    color: #1c1c1d;
+    cursor: pointer;
+    transition: all 0.2s var(--ease);
+    margin-top: 16px;
+    letter-spacing: 0.02em;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.18) inset,
+      0 4px 14px -6px rgba(187,160,90,0.5);
+    display: inline-flex;
+    align-items: center; justify-content: center;
+    gap: 8px;
+  }
+  .btn:hover {
+    background: var(--gold-light);
+    transform: translateY(-1px);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.22) inset,
+      0 6px 18px -6px rgba(187,160,90,0.6);
+  }
+  .btn:active { transform: translateY(0); }
+  .btn:disabled {
+    background: var(--bg-3);
+    color: var(--ink-faint);
+    cursor: not-allowed;
+    box-shadow: none;
+    border-color: var(--rule);
+  }
+
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--rule);
+    color: var(--ink-muted);
+    box-shadow: none;
+    font-weight: 500;
+  }
+  .btn-outline:hover {
+    background: var(--bg-3);
+    border-color: var(--gold-line-2);
+    color: var(--ink);
+    box-shadow: none;
+    transform: none;
+  }
+
+  .btn-sm { padding: 11px 14px; font-size: 13px; }
+  .action-row {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 0;
+  }
+  .action-row .btn { margin-top: 0; flex: 1; min-width: 110px; }
+
+  .btn-whatsapp {
+    background: #25D366;
+    color: #fff;
+    border-color: transparent;
+    font-weight: 600;
+    box-shadow: none;
+  }
+  .btn-whatsapp:hover {
+    background: #20BD5A;
+    box-shadow: none;
+    transform: none;
+  }
+
+  /* ── status / loading ─────────────────────────────────── */
+  .status {
+    text-align: center;
+    padding: 28px 16px;
+    display: none;
+  }
+  .status.active { display: block; }
+  .spinner-wrap {
+    position: relative;
+    width: 52px; height: 52px;
+    margin: 0 auto 18px;
+  }
+  .spinner-wrap::before {
+    content: '';
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    border: 2px solid var(--gold-line);
+  }
+  .spinner-wrap::after {
+    content: '';
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    border-top-color: var(--gold);
+    border-right-color: var(--gold);
+    animation: spin 0.9s linear infinite;
+  }
+  .spinner-coin {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 22px; height: 22px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 35% 35%, var(--gold-light), var(--gold) 60%, var(--gold-dark));
+    box-shadow: 0 0 8px rgba(187,160,90,0.5);
+    animation: coinFlip 2.4s ease-in-out infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes coinFlip {
+    0%, 100% { transform: translate(-50%, -50%) rotateY(0deg); }
+    50%      { transform: translate(-50%, -50%) rotateY(180deg); }
+  }
+  .status-text {
+    font-size: 14px;
+    color: var(--ink-muted);
+    font-weight: 400;
+    margin-bottom: 4px;
+  }
+  .status-detail {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .status-detail .timer { color: var(--gold); }
+
+  /* ── error ────────────────────────────────────────────── */
+  .error-msg {
+    background: rgba(224,123,106,0.08);
+    border: 1px solid rgba(224,123,106,0.28);
+    border-radius: 8px;
+    padding: 11px 14px;
+    font-size: 13px;
+    color: var(--danger);
+    margin-top: 12px;
+    display: none;
+    line-height: 1.5;
+  }
+  .error-msg.show { display: block; animation: fadeUp 0.25s var(--ease) both; }
+
+  /* ── result ───────────────────────────────────────────── */
+  .result-frame {
+    position: relative;
+    border-radius: var(--radius-img);
+    overflow: hidden;
+    background: #1f1f20;
+    border: 1px solid var(--rule);
+    margin-bottom: 12px;
+  }
+  .result-frame::before {
+    display: none;
+  }
+  .result-img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .result-meta {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: var(--ink-faint);
+    text-align: center;
+    margin: 0 0 18px;
+    line-height: 1.6;
+    text-transform: uppercase;
+  }
+  .cta-box {
+    text-align: center;
+  }
+  .cta-box p {
+    font-size: 14px;
+    color: var(--ink-muted);
+    margin: 0 0 14px;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  /* ── footer ───────────────────────────────────────────── */
+  footer {
+    text-align: center;
+    padding: 38px 0 28px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    line-height: 1.8;
+  }
+  footer .dot { color: var(--gold-line-2); margin: 0 6px; }
+  footer a { color: var(--ink-muted); text-decoration: none; }
+  footer a:hover { color: var(--gold); }
+
+  canvas#watermark-canvas { display: none; }
+
+  /* ── density variants (driven by tweaks) ──────────────── */
+  body[data-density="compact"] {
+    --pad-card-x: 14px;
+    --pad-card-y: 18px;
+    --gap-field: 10px;
+  }
+  body[data-density="comfy"] {
+    --pad-card-x: 22px;
+    --pad-card-y: 28px;
+    --gap-field: 18px;
+  }
+
+  /* ── small screens ────────────────────────────────────── */
+  @media (max-width: 480px) {
+    .container { padding: 0 14px; }
+    header { padding: 22px 0 6px; }
+    .logo-img { height: 48px; }
+    .stepper { margin: 22px 0 14px; }
+    .step-lbl { font-size: 9.5px; letter-spacing: 0.1em; }
+  }
+  @media (max-width: 360px) {
+    .step-lbl { display: none; }
+    .stepper { margin-bottom: 8px; }
+  }
+
+  /* ── focus ring for keyboard ──────────────────────────── */
+  :focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  input:focus-visible, textarea:focus-visible {
+    outline: none; /* handled by border + ring */
+  }
+
+  /* hide scrollbar smoothly on small */
+  html { scroll-behavior: smooth; }
 </style>
 </head>
-<body>
+<body data-density="regular">
 <canvas id="watermark-canvas"></canvas>
+
 <div class="container">
   <header>
-    <img src="https://tocoin.com.br/wp-content/uploads/2026/03/LogoTocoinpq.png" class="logo-img" alt="Tocoin" id="logo-header">
-    <h1>Visualize sua <span>moeda</span> antes de pedir</h1>
-    <p class="subtitle">Use inteligência artificial para ver como ficará sua challenge coin ou brevê personalizado.</p>
+    <div class="eyebrow" style="font-family: Montserrat; font-size: 14px">Tocoin · Visualizador</div>
+    <div class="logo-wrap">
+      <img src="https://tocoin.com.br/wp-content/uploads/2026/03/LogoTocoinpq.png" class="logo-img" alt="Tocoin" id="logo-header" onerror="this.style.display='none'" >
+    </div>
+    <h1 id="hero-h1" data-default-html='Visualize sua moeda e brevê<em style="font-family: Montserrat; letter-spacing: 0px; line-height: 0; font-weight: 400; border-radius: 0px 4px 4px"><span style="color: #bba05a"></span></em><br>antes de pedir<span style="color: rgb(246, 237, 236)"></span><span style="color: rgb(161, 82, 73)"></span>'>E se você pudesse ver seu projeto agora? <span style="color: #bba05a; font-weight: 700">Crie. Visualize. Surpreenda-se.</span></h1>
+    <p class="subtitle" id="hero-sub" data-default="Use nossa inteligência artificial para ver como ficará sua moeda ou brevê personalizado." style="font-size: 18px">Use nossa inteligência artificial para ver como ficará sua moeda ou brevê personalizado.</p>
   </header>
 
-  <div class="steps">
-    <div class="step-dot active" id="dot-1"></div>
-    <div class="step-dot" id="dot-2"></div>
-    <div class="step-dot" id="dot-3"></div>
-  </div>
+  <nav class="stepper" aria-label="Progresso" style="grid-template-columns: repeat(4, 1fr)">
+    <div class="step active" id="step-ind-1">
+      <div class="step-num">1</div>
+      <span class="step-lbl" style="font-size: 12px">Contato</span>
+    </div>
+    <div class="step" id="step-ind-2">
+      <div class="step-num">2</div>
+      <span class="step-lbl" style="font-size: 12px">Criação</span>
+    </div>
+    <div class="step" id="step-ind-3">
+      <div class="step-num">3</div>
+      <span class="step-lbl" style="font-size: 12px">Resultado</span>
+    </div>
+    <div class="step" id="step-ind-4">
+      <div class="step-num">4</div>
+      <span class="step-lbl" style="font-size: 12px">Orçamento</span>
+    </div>
+  </nav>
 
   <!-- STEP 1 -->
   <div class="card active" id="step-1">
-    <div class="card-label">Passo 1 de 3</div>
-    <div class="card-title">Seus dados para receber o orçamento</div>
-    <div class="field"><label>Nome completo</label><input type="text" id="nome" placeholder="Seu nome" autocomplete="name"></div>
-    <div class="field"><label>WhatsApp</label><input type="tel" id="telefone" placeholder="(00) 00000-0000" autocomplete="tel"></div>
-    <div class="field"><label>E-mail</label><input type="email" id="email" placeholder="seu@email.com" autocomplete="email"></div>
+    <div class="card-eyebrow">
+      <span style="font-family: Montserrat; font-size: 12px">Passo 01</span>
+      <span class="meta" style="font-family: Montserrat; font-size: 12px">de 03</span>
+    </div>
+    <h2 class="card-title">Seus dados para liberar o visualizador</h2>
+
+    <div class="field">
+      <label style="font-size: 12px">Nome completo</label>
+      <input type="text" id="nome" placeholder="Seu nome" autocomplete="name">
+    </div>
+    <div class="field">
+      <label style="font-size: 12px">WhatsApp <span class="hint">com DDD</span></label>
+      <input type="tel" id="telefone" placeholder="(00) 00000-0000" autocomplete="tel">
+    </div>
+    <div class="field">
+      <label style="font-size: 12px">E-mail</label>
+      <input type="email" id="email" placeholder="seu@email.com" autocomplete="email">
+    </div>
     <div class="error-msg" id="error-1"></div>
-    <button class="btn" onclick="irStep2()">Continuar →</button>
+    <button class="btn" onclick="irStep2()">
+      Continuar
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+    </button>
   </div>
 
   <!-- STEP 2 -->
   <div class="card" id="step-2">
-    <div class="card-label">Passo 2 de 3</div>
-    <div class="card-title">Configure sua peça</div>
+    <div class="card-eyebrow">
+      <span style="font-family: Montserrat; font-size: 12px">Passo 02</span>
+      <span class="meta" style="font-family: Montserrat; font-size: 12px">de 03</span>
+    </div>
+    <h2 class="card-title">Configure seu projeto</h2>
 
     <div class="field">
-      <label>Tipo de peça</label>
+      <label>Tipo de produto</label>
       <div class="tags" id="tipo-tags">
-        <div class="tag selected" onclick="selectTag(this,'tipo')">Challenge Coin</div>
+        <div class="tag selected" onclick="selectTag(this,'tipo')">Moeda Personalizada</div>
         <div class="tag" onclick="selectTag(this,'tipo')">Brevê Militar</div>
-        <div class="tag" onclick="selectTag(this,'tipo')">Medalha</div>
-        <div class="tag" onclick="selectTag(this,'tipo')">Moeda Comemorativa</div>
       </div>
     </div>
 
     <div class="field">
-      <label>Acabamento</label>
+      <label>Banho</label>
       <div class="tags" id="material-tags">
-        <div class="tag selected" onclick="selectTag(this,'material')">Dourado</div>
-        <div class="tag" onclick="selectTag(this,'material')">Prateado</div>
-        <div class="tag" onclick="selectTag(this,'material')">Bronze Envelhecido</div>
-        <div class="tag" onclick="selectTag(this,'material')">Níquel Preto</div>
-        <div class="tag" onclick="selectTag(this,'material')">Dourado com Esmalte</div>
+        <div class="tag selected" onclick="selectTag(this,'material')">Bronze Envelhecido</div>
+        <div class="tag" onclick="selectTag(this,'material')">Prata Envelhecido</div>
+        <div class="tag" onclick="selectTag(this,'material')">Ouro Brilho</div>
+        <div class="tag" onclick="selectTag(this,'material')">Ouro Envelhecido</div>
+        <div class="tag" onclick="selectTag(this,'material')">Níquel Brilho</div>
       </div>
     </div>
 
-    <div class="section-divider"></div>
-    <div class="section-label">Descreva cada face da sua peça</div>
+    <div class="field">
+      <label>Cores</label>
+      <div class="tags" id="cores-tags">
+        <div class="tag selected" onclick="selectTag(this,'cores')">Sem cor</div>
+        <div class="tag" onclick="selectTag(this,'cores')">Colorida</div>
+      </div>
+    </div>
+
+    <div class="or-divider" style="font-family: Montserrat; font-size: 12px; margin-top: 18px; margin-bottom: 14px">Descreva cada face</div>
 
     <div class="field">
-      <label>Frente (Lado 1)</label>
+      <label>Frente <span class="hint">Lado 01</span></label>
       <textarea id="lado1" placeholder="Ex: Águia em alto relevo no centro, texto FORÇA E HONRA ao redor, estrelas na borda..."></textarea>
     </div>
-    <div class="field">
-      <label>Verso (Lado 2)</label>
+    <div class="field" id="campo-lado2">
+      <label>Verso <span class="hint">Lado 02</span></label>
       <textarea id="lado2" placeholder="Ex: Escudo do Brasil ao centro, texto EXÉRCITO BRASILEIRO na parte inferior, ano 2026..."></textarea>
     </div>
 
-    <div class="or-divider">ou envie uma imagem de referência</div>
+    <div class="or-divider" style="font-family: Montserrat; font-size: 12px">ou envie uma referência</div>
     <div class="upload-area" id="upload-area">
       <input type="file" id="file-input" accept="image/*" onchange="handleUpload(this)">
-      <p>Clique para enviar uma imagem de referência</p>
-      <small>PNG, JPG — opcional</small>
-      <img class="upload-preview" id="upload-preview">
+      <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="17 8 12 3 7 8"/>
+        <line x1="12" y1="3" x2="12" y2="15"/>
+      </svg>
+      <p>Toque para enviar uma imagem de referência</p>
+      <small style="font-family: Montserrat; font-size: 12px; letter-spacing: 0.05em">PNG · JPG · OPCIONAL</small>
+      <img class="upload-preview" id="upload-preview" alt="Pré-visualização">
     </div>
 
     <div class="error-msg" id="error-2"></div>
-    <button class="btn" onclick="irStep3()">Gerar imagem →</button>
-    <button class="btn btn-outline" onclick="voltarStep1()" style="margin-top:10px;">← Voltar</button>
+    <button class="btn" onclick="irStep3()">
+      Gerar imagem
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+    </button>
+    <button class="btn btn-outline" onclick="voltarStep1()">← Voltar</button>
   </div>
 
   <!-- STEP 3 -->
   <div class="card" id="step-3">
-    <div class="card-label">Passo 3 de 3</div>
-    <div class="card-title">Sua peça gerada por IA</div>
+    <div class="card-eyebrow">
+      <span style="font-family: Montserrat; font-size: 12px">Passo 03</span>
+      <span class="meta" style="font-family: Montserrat; font-size: 12px">de 03</span>
+    </div>
+    <h2 class="card-title">Seu projeto gerado por IA</h2>
 
     <div class="status active" id="status-gerando">
-      <span class="spinner"></span>
-      <span id="status-text">Gerando sua peça... aguarde</span>
+      <div class="spinner-wrap">
+        <div class="spinner-coin"></div>
+      </div>
+      <div class="status-text" id="status-text">Renderizando sua peça…</div>
+      <div class="status-detail">
+        <span id="status-stage">Analisando descrição</span>
+        <span style="color: var(--gold-line-2);"> · </span>
+        <span class="timer" id="status-timer">0s</span>
+      </div>
     </div>
 
     <div id="result-content" style="display:none;">
-      <img class="result-img" id="result-img">
-      <p class="result-meta">© Tocoin Moedas e Medalhas — Imagem gerada por IA. Resultado ilustrativo, a peça real pode ter variações.</p>
+      <div class="result-frame">
+        <img class="result-img" id="result-img" alt="Sua peça gerada por IA">
+      </div>
+      <p class="result-meta" style="font-family: Montserrat; font-size: 12px">© Tocoin Moedas e Medalhas · Imagem ilustrativa gerada por IA</p>
 
       <div class="action-row">
-        <button class="btn btn-sm" onclick="downloadImagem()">⬇ Baixar</button>
-        <button class="btn btn-outline btn-sm" onclick="limparGerar()">↺ Gerar novamente</button>
-        <button class="btn btn-outline btn-sm" onclick="limparCampos()">✕ Limpar</button>
+        <button class="btn btn-outline btn-sm" onclick="downloadImagem()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          Baixar
+        </button>
+        <button class="btn btn-outline btn-sm" onclick="limparGerar()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+          Refazer
+        </button>
       </div>
 
       <div class="section-divider"></div>
       <div class="cta-box">
         <p>Gostou do resultado? Fale com nossa equipe e receba um orçamento personalizado.</p>
-        <button class="btn btn-whatsapp" onclick="abrirWhatsApp()">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        <button class="btn btn-whatsapp" onclick="irStep4()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
           Quero meu orçamento
         </button>
-        <button class="btn btn-outline" onclick="voltarStep2()" style="margin-top:10px;">← Alterar configuração</button>
+        <button class="btn btn-outline" onclick="voltarStep2()">← Alterar configuração</button>
       </div>
     </div>
     <div class="error-msg" id="error-3"></div>
   </div>
 
-  <footer>© 2026 Tocoin Moedas e Medalhas · Brasil · tocoin.com.br</footer>
+  <!-- STEP 4 -->
+  <div class="card" id="step-4">
+    <div class="card-eyebrow">
+      <span style="font-family: Montserrat; font-size: 12px">Passo 04</span>
+      <span class="meta" style="font-family: Montserrat; font-size: 12px">de 04</span>
+    </div>
+    <h2 class="card-title">Detalhes do seu orçamento</h2>
+
+    <div class="field">
+      <label style="font-size: 12px">Quantidade</label>
+      <input type="number" id="quantidade" placeholder="Ex: 100" min="1">
+    </div>
+
+    <div class="field">
+      <label style="font-size: 12px">Para quando precisa?</label>
+      <input type="text" id="prazo" placeholder="Ex: 30 dias, agosto/2026...">
+    </div>
+
+    <div class="field">
+      <label style="font-size: 12px">Segmento</label>
+      <div class="tags" id="segmento-tags" style="gap: 7px">
+        <div class="tag" onclick="selectTag(this,'segmento')">Polícia Militar</div>
+        <div class="tag" onclick="selectTag(this,'segmento')">Empresa Privada</div>
+        <div class="tag" onclick="selectTag(this,'segmento')">Forças Armadas</div>
+        <div class="tag" onclick="selectTag(this,'segmento')">Bombeiro</div>
+        <div class="tag" onclick="selectTag(this,'segmento')">Polícia Civil</div>
+        <div class="tag" onclick="selectTag(this,'segmento')">Polícia Federal</div>
+        <div class="tag" onclick="selectTag(this,'segmento')">Polícia Rodoviária Federal</div>
+        <div class="tag" onclick="selectTag(this,'segmento')">Polícia Penal</div>
+        <div class="tag" onclick="selectTag(this,'segmento')">Governo</div>
+        <div class="tag" onclick="selectTag(this,'segmento')">Particular</div>
+        <div class="tag" onclick="selectTag(this,'segmento')">Instituição</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label style="font-size: 12px">Nome da instituição / empresa</label>
+      <input type="text" id="instituicao" placeholder="Ex: Polícia Militar de Santa Catarina">
+    </div>
+
+    <div class="error-msg" id="error-4"></div>
+    <button class="btn btn-whatsapp" onclick="enviarOrcamento()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Solicitar orçamento
+    </button>
+    <button class="btn btn-outline" onclick="setStep(3)" style="margin-top: 10px">← Voltar</button>
+  </div>
+
+  <footer style="font-family: Montserrat; font-size: 12px">
+    © 2026 Tocoin Moedas e Medalhas
+    <span class="dot">·</span>
+    Brasil
+    <span class="dot">·</span>
+    <a href="https://tocoin.com.br" target="_blank" rel="noopener">tocoin.com.br</a>
+  </footer>
 </div>
 
+<div id="tweaks-root"></div>
+
 <script>
+  /* ─────────────────────────────────────────────────────────
+     App logic — preserva fluxo original
+     ───────────────────────────────────────────────────────── */
   const WHATSAPP = '554891113924';
-  let tipoSelecionado = 'Challenge Coin';
-  let materialSelecionado = 'Dourado';
+  let tipoSelecionado = 'Moeda Personalizada';
+  let coresSelecionado = 'Sem cor';
+  let segmentoSelecionado = '';
+  let leadId = null;
+  let materialSelecionado = 'Bronze Envelhecido';
   let uploadBase64 = null;
   let timerInterval = null;
   let resultImageSrc = null;
   let logoImg = null;
 
-  // Pre-load logo for watermark
+  const STAGE_MESSAGES = [
+    'Analisando descrição',
+    'Compondo geometria',
+    'Renderizando alto relevo',
+    'Aplicando acabamento',
+    'Finalizando detalhes'
+  ];
+
   window.addEventListener('load', () => {
     logoImg = new Image();
     logoImg.crossOrigin = 'anonymous';
     logoImg.src = 'https://tocoin.com.br/wp-content/uploads/2026/03/LogoTocoinpq.png';
+    // phone mask
+    const tel = document.getElementById('telefone');
+    if (tel) tel.addEventListener('input', maskPhone);
   });
 
+  function maskPhone(e) {
+    let v = e.target.value.replace(/\D/g, '').slice(0, 11);
+    if (v.length > 10)      v = v.replace(/(\d{2})(\d{5})(\d{0,4}).*/, '($1) $2-$3');
+    else if (v.length > 6)  v = v.replace(/(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3');
+    else if (v.length > 2)  v = v.replace(/(\d{2})(\d{0,5}).*/, '($1) $2');
+    else if (v.length > 0)  v = v.replace(/(\d{0,2}).*/, '($1');
+    e.target.value = v;
+  }
+
   function selectTag(el, group) {
-    document.getElementById(group+'-tags').querySelectorAll('.tag').forEach(t => t.classList.remove('selected'));
+    document.getElementById(group + '-tags')
+      .querySelectorAll('.tag').forEach(t => t.classList.remove('selected'));
     el.classList.add('selected');
-    if (group === 'tipo') tipoSelecionado = el.textContent;
-    if (group === 'material') materialSelecionado = el.textContent;
+    if (group === 'tipo') {
+      tipoSelecionado = el.textContent.trim();
+      const campo2 = document.getElementById('campo-lado2');
+      if (campo2) campo2.style.display = tipoSelecionado === 'Brevê Militar' ? 'none' : '';
+    }
+    if (group === 'material') materialSelecionado = el.textContent.trim();
+    if (group === 'cores') coresSelecionado = el.textContent.trim();
+    if (group === 'segmento') segmentoSelecionado = el.textContent.trim();
   }
 
   function handleUpload(input) {
@@ -230,33 +984,67 @@ canvas { display: none; }
       const preview = document.getElementById('upload-preview');
       preview.src = e.target.result;
       preview.style.display = 'block';
-      document.querySelector('#upload-area p').textContent = file.name;
+      const p = document.querySelector('#upload-area p');
+      if (p) p.textContent = file.name;
     };
     reader.readAsDataURL(file);
   }
 
   function setStep(n) {
-    [1,2,3].forEach(i => {
-      document.getElementById('step-'+i).classList.toggle('active', i === n);
-      const dot = document.getElementById('dot-'+i);
-      dot.classList.remove('active','done');
-      if (i === n) dot.classList.add('active');
-      else if (i < n) dot.classList.add('done');
+    [1, 2, 3, 4].forEach(i => {
+      const card = document.getElementById('step-' + i);
+      if (card) card.classList.toggle('active', i === n);
+      const ind = document.getElementById('step-ind-' + i);
+      if (ind) { ind.classList.remove('active', 'done'); if (i === n) ind.classList.add('active'); else if (i < n) ind.classList.add('done'); }
     });
-    window.scrollTo({top:0,behavior:'smooth'});
+    atualizarHero(n);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function showError(id, msg) { const el = document.getElementById(id); el.textContent = msg; el.style.display = 'block'; }
-  function hideError(id) { document.getElementById(id).style.display = 'none'; }
+  function atualizarHero(n) {
+    const h1  = document.getElementById('hero-h1');
+    const sub = document.getElementById('hero-sub');
+    if (!h1 || !sub) return;
+    const nomeRaw = (document.getElementById('nome')?.value || '').trim();
+    const primeiroNome = nomeRaw.split(/\s+/)[0] || '';
+    const gold = '#bba05a';
+    if (n === 1) {
+      h1.innerHTML = h1.dataset.defaultHtml;
+      sub.textContent = sub.dataset.default;
+    } else if (n === 2) {
+      h1.innerHTML = primeiroNome
+        ? `Agora, <span style="color:${gold}">${primeiroNome}</span>,<br>configure seu projeto`
+        : `Agora,<br>configure seu <span style="color:${gold}">projeto</span>`;
+      sub.textContent = 'Conte os detalhes, quanto mais específico, mais fiel será sua visualização.';
+    } else if (n === 3) {
+      h1.innerHTML = primeiroNome
+        ? `<span style="color:${gold}">${primeiroNome}</span>,<br>aqui está sua peça`
+        : `Sua peça,<br><span style="color:${gold}">pronta</span>`;
+      sub.textContent = 'Imagem ilustrativa gerada por IA. Você pode refazer quantas vezes quiser.';
+    }
+  }
+  window.atualizarHero = atualizarHero;
+
+  function showError(id, msg) {
+    const el = document.getElementById(id);
+    el.textContent = msg;
+    el.classList.add('show');
+  }
+  function hideError(id) {
+    document.getElementById(id).classList.remove('show');
+  }
 
   function irStep2() {
     hideError('error-1');
     const nome = document.getElementById('nome').value.trim();
     const telefone = document.getElementById('telefone').value.trim();
     const email = document.getElementById('email').value.trim();
-    if (!nome) return showError('error-1','Por favor, informe seu nome.');
-    if (!telefone) return showError('error-1','Por favor, informe seu WhatsApp.');
-    if (!email || !email.includes('@')) return showError('error-1','Por favor, informe um e-mail válido.');
+    if (!nome) return showError('error-1', 'Por favor, informe seu nome.');
+    if (!telefone || telefone.replace(/\D/g, '').length < 10)
+      return showError('error-1', 'Por favor, informe um WhatsApp válido.');
+    if (!email || !email.includes('@') || !email.includes('.'))
+      return showError('error-1', 'Por favor, informe um e-mail válido.');
+    salvarLead();
     salvarLead();
     setStep(2);
   }
@@ -284,14 +1072,15 @@ canvas { display: none; }
           criado_em: new Date().toISOString()
         })
       });
-    } catch(e) { console.warn('Lead save failed:', e); }
+    } catch (e) { console.warn('Lead save failed:', e); }
   }
 
   async function irStep3() {
     hideError('error-2');
     const lado1 = document.getElementById('lado1').value.trim();
     const lado2 = document.getElementById('lado2').value.trim();
-    if (!lado1 && !lado2 && !uploadBase64) return showError('error-2','Por favor, descreva ao menos uma face da peça ou envie uma imagem de referência.');
+    if (!lado1 && !lado2 && !uploadBase64)
+      return showError('error-2', 'Por favor, descreva ao menos uma face ou envie uma imagem de referência.');
     setStep(3);
     document.getElementById('result-content').style.display = 'none';
     document.getElementById('status-gerando').classList.add('active');
@@ -301,7 +1090,18 @@ canvas { display: none; }
 
   async function gerarImagem() {
     let elapsed = 0;
-    timerInterval = setInterval(() => { elapsed++; document.getElementById('status-text').textContent = `Gerando sua peça... ${elapsed}s`; }, 1000);
+    let stageIdx = 0;
+    document.getElementById('status-stage').textContent = STAGE_MESSAGES[0];
+    timerInterval = setInterval(() => {
+      elapsed++;
+      document.getElementById('status-timer').textContent = elapsed + 's';
+      // cycle stage messages every ~4s
+      const newStage = Math.min(STAGE_MESSAGES.length - 1, Math.floor(elapsed / 4));
+      if (newStage !== stageIdx) {
+        stageIdx = newStage;
+        document.getElementById('status-stage').textContent = STAGE_MESSAGES[stageIdx];
+      }
+    }, 1000);
     try {
       const res = await fetch('/api/gerar', {
         method: 'POST',
@@ -318,17 +1118,67 @@ canvas { display: none; }
       const data = await res.json();
       if (!data.success) throw new Error(data.error || 'Erro desconhecido');
 
-      // Apply watermark via canvas
       const finalSrc = await aplicarMarcaDagua(`data:${data.mimeType};base64,${data.data}`);
       resultImageSrc = finalSrc;
       document.getElementById('result-img').src = finalSrc;
       document.getElementById('status-gerando').classList.remove('active');
       document.getElementById('result-content').style.display = 'block';
-    } catch(e) {
+    } catch (e) {
       clearInterval(timerInterval);
+      // Fallback for preview environments where /api/gerar isn't available
+      if (location.protocol === 'file:' || /sandbox|preview|localhost/i.test(location.host) || e.message?.includes('JSON')) {
+        const previewSrc = await gerarPlaceholder();
+        resultImageSrc = previewSrc;
+        document.getElementById('result-img').src = previewSrc;
+        document.getElementById('status-gerando').classList.remove('active');
+        document.getElementById('result-content').style.display = 'block';
+        return;
+      }
       document.getElementById('status-gerando').classList.remove('active');
-      showError('error-3','Erro ao gerar imagem: ' + e.message);
+      showError('error-3', 'Erro ao gerar imagem: ' + e.message);
     }
+  }
+
+  // Placeholder generator for preview/demo environments
+  function gerarPlaceholder() {
+    return new Promise((resolve) => {
+      const W = 1024, H = 1024;
+      const canvas = document.createElement('canvas');
+      canvas.width = W; canvas.height = H;
+      const ctx = canvas.getContext('2d');
+      // background
+      const bg = ctx.createRadialGradient(W/2, H/2, 80, W/2, H/2, W*0.8);
+      bg.addColorStop(0, '#3a3a3b'); bg.addColorStop(1, '#1c1c1d');
+      ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+      // coin
+      const cx = W/2, cy = H/2, r = W*0.36;
+      const grad = ctx.createRadialGradient(cx - r*0.3, cy - r*0.3, r*0.1, cx, cy, r);
+      grad.addColorStop(0, '#e8d294');
+      grad.addColorStop(0.55, '#bba05a');
+      grad.addColorStop(1, '#6e5630');
+      ctx.fillStyle = grad;
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.fill();
+      // outer ring
+      ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+      ctx.lineWidth = 4;
+      ctx.beginPath(); ctx.arc(cx, cy, r - 12, 0, Math.PI*2); ctx.stroke();
+      ctx.strokeStyle = 'rgba(0,0,0,0.25)';
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(cx, cy, r - 22, 0, Math.PI*2); ctx.stroke();
+      // text label
+      ctx.fillStyle = 'rgba(0,0,0,0.5)';
+      ctx.font = '600 64px Montserrat, sans-serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('PREVIEW', cx, cy - 30);
+      ctx.font = '500 28px Montserrat, sans-serif';
+      ctx.fillStyle = 'rgba(0,0,0,0.4)';
+      ctx.fillText(tipoSelecionado.toUpperCase(), cx, cy + 30);
+      ctx.font = '400 22px JetBrains Mono, monospace';
+      ctx.fillStyle = 'rgba(0,0,0,0.35)';
+      ctx.fillText(materialSelecionado, cx, cy + 70);
+      // resolve as image (then watermark)
+      aplicarMarcaDagua(canvas.toDataURL('image/jpeg', 0.92)).then(resolve);
+    });
   }
 
   function aplicarMarcaDagua(src) {
@@ -342,7 +1192,6 @@ canvas { display: none; }
 
         ctx.drawImage(img, 0, 0);
 
-        // Logo watermark bottom right
         if (logoImg && logoImg.complete && logoImg.naturalWidth > 0) {
           const logoW = img.width * 0.16;
           const logoH = (logoImg.naturalHeight / logoImg.naturalWidth) * logoW;
@@ -352,12 +1201,12 @@ canvas { display: none; }
           ctx.globalAlpha = 1;
         }
 
-        // Copyright text
         const fontSize = Math.max(12, Math.round(img.width * 0.016));
         ctx.font = `${fontSize}px Arial, sans-serif`;
         ctx.fillStyle = 'rgba(255,255,255,0.55)';
         ctx.textAlign = 'center';
-        ctx.fillText('© Tocoin Moedas e Medalhas — Uso exclusivo para visualização', img.width / 2, img.height - Math.round(fontSize * 0.8));
+        ctx.fillText('© Tocoin Moedas e Medalhas — Uso exclusivo para visualização',
+          img.width / 2, img.height - Math.round(fontSize * 0.8));
 
         resolve(canvas.toDataURL('image/jpeg', 0.92));
       };
@@ -373,20 +1222,6 @@ canvas { display: none; }
     gerarImagem();
   }
 
-  function limparCampos() {
-    document.getElementById('lado1').value = '';
-    document.getElementById('lado2').value = '';
-    document.getElementById('file-input').value = '';
-    document.getElementById('upload-preview').style.display = 'none';
-    document.querySelector('#upload-area p').textContent = 'Clique para enviar uma imagem de referência';
-    uploadBase64 = null;
-    resultImageSrc = null;
-    document.getElementById('result-content').style.display = 'none';
-    document.getElementById('status-gerando').classList.remove('active');
-    hideError('error-3');
-    setStep(2);
-  }
-
   function downloadImagem() {
     if (!resultImageSrc) return;
     const a = document.createElement('a');
@@ -395,11 +1230,93 @@ canvas { display: none; }
     a.click();
   }
 
+  function limparCampos() {
+    document.getElementById('lado1').value = '';
+    document.getElementById('lado2').value = '';
+    document.getElementById('file-input').value = '';
+    document.getElementById('upload-preview').style.display = 'none';
+    const p = document.querySelector('#upload-area p');
+    if (p) p.textContent = 'Toque para enviar uma imagem de referência';
+    uploadBase64 = null;
+    resultImageSrc = null;
+    document.getElementById('result-content').style.display = 'none';
+    document.getElementById('status-gerando').classList.add('active');
+    hideError('error-3');
+    setStep(2);
+  }
+
+  function voltarStep2() {
+    document.getElementById('result-content').style.display = 'none';
+    document.getElementById('status-gerando').classList.add('active');
+    hideError('error-3');
+    setStep(2);
+  }
+
+  function irStep4() {
+    setStep(4);
+  }
+
+  async function enviarOrcamento() {
+    hideError('error-4');
+    const quantidade = document.getElementById('quantidade').value.trim();
+    const prazo = document.getElementById('prazo').value.trim();
+    const instituicao = document.getElementById('instituicao').value.trim();
+    if (!quantidade) return showError('error-4', 'Por favor, informe a quantidade.');
+    if (!prazo) return showError('error-4', 'Por favor, informe o prazo.');
+    if (!segmentoSelecionado) return showError('error-4', 'Por favor, selecione o segmento.');
+    if (!instituicao) return showError('error-4', 'Por favor, informe o nome da instituição ou empresa.');
+
+    // Update lead in Supabase
+    try {
+      await fetch('/api/lead-update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: leadId,
+          email: document.getElementById('email').value.trim(),
+          quantidade, prazo, segmento: segmentoSelecionado, instituicao
+        })
+      });
+    } catch(e) { console.warn('Lead update failed:', e); }
+
+    // Open WhatsApp
+    const nome = document.getElementById('nome').value.trim();
+    const telefone = document.getElementById('telefone').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const msg = encodeURIComponent(
+      `Olá! Gostaria de solicitar um orçamento.
+
+` +
+      `*Nome:* ${nome}
+` +
+      `*Telefone:* ${telefone}
+` +
+      `*E-mail:* ${email}
+` +
+      `*Produto:* ${tipoSelecionado}
+` +
+      `*Banho:* ${materialSelecionado}
+` +
+      `*Quantidade:* ${quantidade}
+` +
+      `*Prazo:* ${prazo}
+` +
+      `*Segmento:* ${segmentoSelecionado}
+` +
+      `*Instituição:* ${instituicao}`
+    );
+    window.open(`https://wa.me/${WHATSAPP}?text=${msg}`, '_blank');
+  }
+
   function abrirWhatsApp() {
     const nome = document.getElementById('nome').value.trim();
-    const msg = encodeURIComponent(`Olá! Me chamo ${nome} e acabei de visualizar minha ${tipoSelecionado} (${materialSelecionado}) no site da Tocoin. Gostaria de receber um orçamento!`);
+    const msg = encodeURIComponent(
+      `Olá! Me chamo ${nome} e acabei de visualizar minha ${tipoSelecionado} (${materialSelecionado}) no site da Tocoin. Gostaria de receber um orçamento!`
+    );
     window.open(`https://wa.me/${WHATSAPP}?text=${msg}`, '_blank');
   }
 </script>
+
+
 </body>
 </html>

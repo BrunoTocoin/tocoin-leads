@@ -169,7 +169,7 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 8px;
-    margin: 28px 0 18px;
+    margin: 28px 0 30px;
     position: relative;
   }
   .step {
@@ -218,8 +218,8 @@
     content: '';
     position: absolute;
     top: calc(10px + 13px);
-    left: calc(16.66% + 16px);
-    right: calc(16.66% + 16px);
+    left: calc(12.5% + 16px);
+    right: calc(12.5% + 16px);
     height: 1px;
     background: linear-gradient(to right, var(--rule), var(--gold-line) 50%, var(--rule));
     z-index: 0;
@@ -666,6 +666,18 @@
     .subtitle {
       font-size: 16px;
       max-width: 560px;
+    }
+
+    .stepper {
+      margin: 28px 0 30px;
+    }
+    .stepper::before {
+      top: calc(10px + 13px);
+      left: calc(12.5% + 13px);
+      right: calc(12.5% + 13px);
+    }
+    .step {
+      padding-top: 10px;
     }
 
     /* Single column centered by default */

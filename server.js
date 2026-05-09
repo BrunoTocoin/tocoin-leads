@@ -294,8 +294,8 @@ const server = http.createServer(async (req, res) => {
           : `perfectly circular coin shape with defined edge rim, thick profile, designed to be held in hand`;
 
         const compositionDesc = isBrève
-          ? `single ${tip} centered in frame, front face design: ${promptLado1 || 'decorative front face with central emblem'}`
-          : `two ${tip}s shown side by side horizontally: LEFT coin (front face): ${promptLado1 || 'decorative front face with central emblem and text around the border'}. RIGHT coin (back face): ${promptLado2 || 'decorative back face with complementary design'}`;
+          ? `single ${tip} centered in frame with generous empty space around it, front face design: ${promptLado1 || 'decorative front face with central emblem'}`
+          : `exactly two ${tip}s placed side by side horizontally with a small gap between them, both centered in the frame with generous empty space on all sides: LEFT coin (front face): ${promptLado1 || 'decorative front face with central emblem and text around the border'}. RIGHT coin (back face): ${promptLado2 || 'decorative back face with complementary design'}. Both coins must be the same size`;
 
         const prompt = `Photorealistic macro product photography of a Brazilian custom ${tip} manufactured by Tocoin Moedas e Medalhas. ${compositionDesc}. PLATING: ${finish}. ENAMEL: ${enamelDesc}. SHAPE: ${shapeDesc}. PHOTOGRAPHY STYLE: the coin(s) must appear as GEOMETRICALLY PERFECT CIRCLES — not oval, not elliptical, not stretched. Camera is 100% perpendicular to the coin face, zero tilt, zero angle, zero perspective distortion. The image aspect ratio must NOT stretch or compress the coins. Each coin occupies no more than 35% of the image width, leaving generous empty space (at least 15% padding) on all sides — top, bottom, left and right — so the coins float comfortably in the frame without touching any edge. Dramatic side lighting from the left highlighting the relief. Dark charcoal background (#3d3d3c). Ultra-sharp macro focus, 8k resolution, professional numismatic product photography. CRITICAL: coins must be PERFECTLY ROUND circles, never oval or elongated.`;
 

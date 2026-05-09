@@ -93,6 +93,106 @@ async function uploadImagem(imageBase64, mimeType, leadEmail) {
   }
 }
 
+
+async function enviarEmailLead(lead, imagemUrl) {
+  try {
+    const imgHtml = imagemUrl
+      ? `<div style="margin: 24px 0; text-align: center;">
+          <img src="${imagemUrl}" alt="Visualização gerada" style="max-width: 100%; border-radius: 8px; border: 1px solid #e0e0e0;">
+          <p style="font-size: 11px; color: #999; margin-top: 8px;">© Tocoin Moedas e Medalhas — Imagem gerada por IA</p>
+        </div>`
+      : '<p style="color:#999; font-size:13px;">Nenhuma imagem gerada ainda.</p>';
+
+    const html = `
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+    <head><meta charset="UTF-8"></head>
+    <body style="margin:0; padding:0; background:#f5f5f5; font-family: 'Helvetica Neue', Arial, sans-serif;">
+      <div style="max-width: 600px; margin: 32px auto; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+
+        <!-- Header -->
+        <div style="background: #2e2e2f; padding: 28px 32px; text-align: center;">
+          <img src="https://tocoin.com.br/wp-content/uploads/2026/03/LogoTocoinpq.png" alt="Tocoin" style="height: 50px;">
+          <p style="color: #bba05a; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; margin: 12px 0 0;">Novo Lead — Visualizador IA</p>
+        </div>
+
+        <!-- Body -->
+        <div style="padding: 32px;">
+          <h2 style="font-size: 20px; color: #222; margin: 0 0 24px;">Novo lead cadastrado</h2>
+
+          <!-- Lead info -->
+          <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+            <tr style="border-bottom: 1px solid #f0f0f0;">
+              <td style="padding: 10px 0; color: #999; width: 140px;">Nome</td>
+              <td style="padding: 10px 0; color: #222; font-weight: 500;">${lead.nome || '—'}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #f0f0f0;">
+              <td style="padding: 10px 0; color: #999;">WhatsApp</td>
+              <td style="padding: 10px 0; color: #222;">${lead.telefone || '—'}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #f0f0f0;">
+              <td style="padding: 10px 0; color: #999;">E-mail</td>
+              <td style="padding: 10px 0; color: #222;">${lead.email || '—'}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #f0f0f0;">
+              <td style="padding: 10px 0; color: #999;">Tipo</td>
+              <td style="padding: 10px 0; color: #222;">${lead.tipo || '—'}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #f0f0f0;">
+              <td style="padding: 10px 0; color: #999;">Banho</td>
+              <td style="padding: 10px 0; color: #222;">${lead.material || '—'}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #f0f0f0;">
+              <td style="padding: 10px 0; color: #999;">Cores</td>
+              <td style="padding: 10px 0; color: #222;">${lead.cores || '—'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 0; color: #999; vertical-align: top;">Descrição</td>
+              <td style="padding: 10px 0; color: #222;">${lead.descricao || '—'}</td>
+            </tr>
+          </table>
+
+          <!-- Image -->
+          ${imgHtml}
+
+          <!-- CTA -->
+          <div style="text-align: center; margin-top: 24px;">
+            <a href="https://wa.me/55${(lead.telefone || '').replace(/\D/g, '')}?text=${encodeURIComponent(`Olá ${lead.nome}! Vi que você criou uma visualização no Visualizador da Tocoin. Posso te ajudar com um orçamento?`)}"
+              style="display: inline-block; background: #25D366; color: #fff; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px;">
+              Abrir WhatsApp
+            </a>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div style="background: #f9f9f9; padding: 16px 32px; text-align: center; border-top: 1px solid #f0f0f0;">
+          <p style="font-size: 11px; color: #bbb; margin: 0;">© 2026 Tocoin Moedas e Medalhas · tocoin.com.br</p>
+        </div>
+      </div>
+    </body>
+    </html>`;
+
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer re_WZhtCgxN_4QtLo9KftMhxbhuDijUY6XtC'
+      },
+      body: JSON.stringify({
+        from: 'Visualizador Tocoin <brunolima@tocoin.com.br>',
+        to: ['brunolima@tocoin.com.br', 'consultor@tocoin.com.br'],
+        subject: `Novo lead: ${lead.nome || 'Sem nome'} — Visualizador Tocoin`,
+        html
+      })
+    });
+
+    const data = await res.json();
+    console.log('[EMAIL] Status:', res.status, data.id || data.message || '');
+  } catch(e) {
+    console.error('[EMAIL] Erro:', e.message);
+  }
+}
+
 async function atualizarImagemLead(leadId, email, imagemUrl) {
   try {
     const filter = leadId ? `id=eq.${leadId}` : `email=eq.${encodeURIComponent(email)}`;
@@ -245,6 +345,17 @@ const server = http.createServer(async (req, res) => {
         if (imagemUrl && (leadId || email)) {
           await atualizarImagemLead(leadId, email, imagemUrl);
         }
+
+        // Send email notification
+        const leadData = { nome: '', telefone: '', email, tipo, material, cores };
+        try {
+          const supRes = await fetch(
+            `${SUPABASE_URL}/rest/v1/leads?${leadId ? `id=eq.${leadId}` : `email=eq.${encodeURIComponent(email)}`}&select=*&limit=1`,
+            { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+          );
+          const rows = await supRes.json();
+          if (rows && rows[0]) await enviarEmailLead(rows[0], imagemUrl);
+        } catch(e) { console.warn('[EMAIL] Skip:', e.message); }
 
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ success: true, ...imageData, imagemUrl }));

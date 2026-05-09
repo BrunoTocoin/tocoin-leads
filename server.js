@@ -6,6 +6,7 @@ const PORT = process.env.PORT || 8080;
 const GEMINI_KEY = process.env.GEMINI_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY;
+const RESEND_KEY = process.env.RESEND_KEY;
 
 const LIMITE_GERACOES = 3;
 
@@ -192,7 +193,7 @@ async function enviarEmailLead(lead, imagemUrl) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer re_WZhtCgxN_4QtLo9KftMhxbhuDijUY6XtC'
+        'Authorization': `Bearer ${RESEND_KEY}`
       },
       body: JSON.stringify({
         from: 'Visualizador Tocoin <brunolima@tocoin.com.br>',
